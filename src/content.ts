@@ -27,7 +27,7 @@ export const ui = {
     stats: [
       ['20+', 'years in software'],
       ['12', 'people on my team'],
-      ['8', 'years leading teams'],
+      ['11', 'years leading teams'],
     ],
     cta: 'Get in touch',
     aboutTitle: 'About me',
@@ -64,7 +64,7 @@ export const ui = {
     stats: [
       ['20+', 'שנים בתוכנה'],
       ['12', 'אנשים בצוות'],
-      ['8', 'שנים בהובלת צוותים'],
+      ['11', 'שנים בהובלת צוותים'],
     ],
     cta: 'בואו נדבר',
     aboutTitle: 'קצת עליי',
