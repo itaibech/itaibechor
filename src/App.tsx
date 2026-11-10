@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { degrees, jobs, links, skills, ui, type Lang } from './content.ts'
+import { degrees, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Lang } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -71,6 +71,59 @@ function About({ d }: { d: Dict }) {
       <h2>{d.aboutTitle}</h2>
       <ul className="cards">{d.about.map((p) => <li key={p} className="card">{p}</li>)}</ul>
       <ul className="chips">{skills.map((s) => <li key={s}>{s}</li>)}</ul>
+    </section>
+  )
+}
+
+function Cards({ id, title, cards, lang }: { id: string; title: string; cards: Card[]; lang: Lang }) {
+  return (
+    <section id={id}>
+      <h2>{title}</h2>
+      <ul className="cards">
+        {cards.map((c) => (
+          <li key={c.title.en} className="card">
+            <h3><span className="icon" aria-hidden="true">{c.icon}</span> {c.title[lang]}</h3>
+            <p>{c.body[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function Testimonials({ d, lang }: { d: Dict; lang: Lang }) {
+  return (
+    <section id="testimonials">
+      <h2>{d.testimonialsTitle}</h2>
+      <ul className="cards quotes">
+        {testimonials.map((q) => (
+          <li key={q.name} className="card">
+            <blockquote dir="ltr">“{q.quote}”</blockquote>
+            <p><strong>{q.name}</strong> · {q.relation[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function Projects({ d, lang }: { d: Dict; lang: Lang }) {
+  return (
+    <section id="projects">
+      <h2>{d.projectsTitle}</h2>
+      <ul className="cards">
+        {projects.map((p) => (
+          <li key={p.name} className="card project">
+            <h3>{p.name}</h3>
+            <p>{p.body[lang]}</p>
+            <ul className="chips">{p.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            <div className="project-links">
+              <a href={p.repo} target="_blank" rel="noreferrer">{d.code} ↗</a>
+              {p.live && <a href={p.live} target="_blank" rel="noreferrer">{d.live} ↗</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }
@@ -200,7 +253,11 @@ export function App() {
       <main>
         <Hero d={d} />
         <About d={d} />
+        <Cards id="leadership" title={d.principlesTitle} cards={principles} lang={lang} />
+        <Cards id="impact" title={d.impactTitle} cards={impact} lang={lang} />
         <Career d={d} lang={lang} />
+        <Testimonials d={d} lang={lang} />
+        <Projects d={d} lang={lang} />
         <Education d={d} lang={lang} />
         <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />
         <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />

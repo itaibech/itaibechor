@@ -17,7 +17,7 @@ export interface Degree {
 
 export const ui = {
   en: {
-    nav: { about: 'About', career: 'Career', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
+    nav: { about: 'About', career: 'Career', projects: 'Projects', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
     hello: "Hi, I'm",
     name: 'Itai Bechor',
     headline: 'Full Stack Team Leader · Software Architect · AI Enthusiast',
@@ -38,6 +38,12 @@ export const ui = {
       'AI enthusiast: Cursor and Claude Code are part of how my team builds every day.',
     ],
     careerTitle: 'Career',
+    principlesTitle: 'How I lead',
+    impactTitle: 'Impact highlights',
+    projectsTitle: 'Projects',
+    testimonialsTitle: 'What people say',
+    code: 'Code',
+    live: 'Live',
     educationTitle: 'Education',
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
@@ -54,7 +60,7 @@ export const ui = {
     footer: 'Built with React, Supabase & Claude Code',
   },
   he: {
-    nav: { about: 'אודות', career: 'קריירה', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
+    nav: { about: 'אודות', career: 'קריירה', projects: 'פרויקטים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
     hello: 'היי, אני',
     name: 'איתי בכור',
     headline: 'ראש צוות Full Stack · ארכיטקט תוכנה · חובב AI',
@@ -75,6 +81,12 @@ export const ui = {
       'חובב AI: ‏Cursor ו-Claude Code הם חלק מהעבודה היומיומית של הצוות.',
     ],
     careerTitle: 'קריירה',
+    principlesTitle: 'איך אני מוביל',
+    impactTitle: 'הישגים בולטים',
+    projectsTitle: 'פרויקטים',
+    testimonialsTitle: 'מה אומרים עליי',
+    code: 'קוד',
+    live: 'לאתר',
     educationTitle: 'השכלה',
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
@@ -176,3 +188,78 @@ export const links = {
   github: 'https://github.com/itaibech',
   facebook: 'https://www.facebook.com/itai.bechor',
 }
+
+export interface Card {
+  icon: string
+  title: Text
+  body: Text
+}
+
+export const principles: Card[] = [
+  { icon: '🛠️', title: t('Hands-on, not hands-off', 'מוביל מתוך הקוד'), body: t('I still review code, pair program and make architecture calls. Credibility comes from the codebase.', 'אני עדיין עושה Code Review, ‏Pair Programming ומחליט על ארכיטקטורה. אמינות מגיעה מהקוד.') },
+  { icon: '🚀', title: t('Ship small, ship often', 'לשחרר קטן, לשחרר הרבה'), body: t('Short feedback loops: small PRs, strong CI/CD, and production stability as a first-class feature.', 'לולאות משוב קצרות: PR-ים קטנים, ‏CI/CD חזק, ויציבות פרודקשן כפיצ׳ר מרכזי.') },
+  { icon: '🌱', title: t('Code review is mentoring', 'Code Review זה חניכה'), body: t('Every review, pairing and vibe-coding session is a chance to grow someone on the team.', 'כל Review, ‏Pairing וסשן Vibe Coding הם הזדמנות לצמיחה של מישהו בצוות.') },
+  { icon: '🤝', title: t('One team, end to end', 'צוות אחד, מקצה לקצה'), body: t('Frontend, backend, QA, product and UX own the outcome together, not their slice of it.', 'Frontend, ‏Backend, ‏QA, מוצר ו-UX אחראים יחד על התוצאה, לא רק על החלק שלהם.') },
+  { icon: '🤖', title: t('AI-first workflow', 'עבודה מבוססת AI'), body: t('Cursor and Claude Code speed up delivery, onboarding and quality; I teach the team to use them well.', 'Cursor ו-Claude Code מאיצים אספקה, קליטה ואיכות; אני מלמד את הצוות להשתמש בהם נכון.') },
+  { icon: '🔒', title: t('Security by default', 'אבטחה כברירת מחדל'), body: t('Years of owning SAST and pen-test findings taught me to build it in, not bolt it on.', 'שנים של אחריות על ממצאי SAST ו-PT לימדו אותי לבנות אבטחה מההתחלה, לא להדביק אותה בסוף.') },
+]
+
+export const impact: Card[] = [
+  { icon: '👥', title: t('10 devs + 2 QA', '10 מפתחים + 2 QA'), body: t('Leading the SolarEdge ONE full-stack squad, from planning through production.', 'מוביל את צוות ה-Full Stack של SolarEdge ONE, מהתכנון ועד הפרודקשן.') },
+  { icon: '📈', title: t('Frontend lead → Full-stack lead', 'מ-Frontend ל-Full Stack'), body: t('Grew from leading 3–5 frontend engineers to the full squad within two years at SolarEdge.', 'גדלתי מהובלת 3–5 מהנדסי Frontend להובלת הצוות המלא תוך שנתיים ב-SolarEdge.') },
+  { icon: '🔐', title: t('Web security owner', 'אחראי אבטחת Web'), body: t('Ran analysis and remediation of internal and external pen-test and SAST scans at BMC.', 'ניתוח ותיקון ממצאי מבדקי חדירה וסריקות SAST פנימיות וחיצוניות ב-BMC.') },
+  { icon: '🔄', title: t('ASP.NET → AngularJS', 'מעבר ל-AngularJS'), body: t('Led the migration of Genesys speech & text analytics UI to a modern SPA.', 'הובלתי את המעבר של ממשק ניתוח הדיבור והטקסט של Genesys לאפליקציית SPA מודרנית.') },
+  { icon: '🛂', title: t('Face recognition at the border', 'זיהוי פנים במעברי גבול'), body: t('Built e-passport face matching with electronic gates, deployed on-site with customers.', 'פיתחתי התאמת פנים לדרכון ביומטרי עם שערים אלקטרוניים, כולל התקנה אצל לקוחות.') },
+  { icon: '🗓️', title: t('20+ years shipping', '20+ שנים של אספקה'), body: t('From C++ and OpenGL to React, Java and the cloud, always learning the next stack.', 'מ-C++ ו-OpenGL ועד React, ‏Java והענן, תמיד לומד את הדבר הבא.') },
+]
+
+export interface Project {
+  name: string
+  body: Text
+  tags: string[]
+  repo: string
+  live?: string
+}
+
+export const projects: Project[] = [
+  {
+    name: 'Building Management',
+    body: t('Hebrew RTL app for a residents committee: payments, maintenance, EV charging and email reminders. Row-level security is the only backend.', 'אפליקציה לוועד בית: תשלומים, תחזוקה, טעינת רכבים ותזכורות במייל. ‏Row-Level Security הוא כל ה-Backend.'),
+    tags: ['React', 'TypeScript', 'Supabase', 'Postgres RLS', 'Edge Functions', 'GitHub Actions'],
+    repo: 'https://github.com/itaibech/buildingManagement',
+    live: 'https://itaibech.github.io/buildingManagement/',
+  },
+  {
+    name: 'itaibechor (this site)',
+    body: t('Bilingual personal site with an admin page, contact form and counters, built with Claude Code.', 'אתר אישי דו-לשוני עם עמוד ניהול, טופס יצירת קשר ומונים, שנבנה עם Claude Code.'),
+    tags: ['React', 'Vite', 'Supabase', 'CSP', 'Claude Code'],
+    repo: 'https://github.com/itaibech/itaibechor',
+    live: 'https://itaibech.github.io/itaibechor/',
+  },
+  {
+    name: 'Angular Micro-Frontends',
+    body: t('Micro-frontend architecture experiment: independently built Angular apps composed into one shell.', 'ניסוי בארכיטקטורת Micro-Frontends: אפליקציות Angular עצמאיות שמורכבות למעטפת אחת.'),
+    tags: ['Angular', 'Module Federation', 'TypeScript'],
+    repo: 'https://github.com/itaibech/angular-mf',
+  },
+  {
+    name: 'Pet Shop API',
+    body: t('REST API for a pet shop catalog: add, find, update and remove animals.', 'REST API לקטלוג חנות חיות: הוספה, חיפוש, עדכון ומחיקה.'),
+    tags: ['NestJS', 'Node.js', 'TypeScript', 'REST'],
+    repo: 'https://github.com/itaibech/pethshop-nest',
+  },
+]
+
+export interface Testimonial {
+  quote: string
+  name: string
+  relation: Text
+}
+
+// From LinkedIn recommendations (shortened). ponytail: static, add fresh SolarEdge/BMC quotes here when you get them.
+export const testimonials: Testimonial[] = [
+  { name: 'Yariv Aharon', relation: t('Reported to Itai at CTrue', 'דיווח לאיתי ב-CTrue'), quote: "Itai's management method allows employees the freedom to examine the technological possibilities to solve problems. He makes sure knowledge passes between all team members. I learned a lot and progressed professionally working with Itai." },
+  { name: 'Dima Nemets', relation: t('Reported to Itai at CTrue', 'דיווח לאיתי ב-CTrue'), quote: 'He gave me and the whole application team a lot of confidence, was very open minded, and has shown a vast knowledge. I would be delighted to work with Itai in the future.' },
+  { name: 'Shai Feder', relation: t('Teammate, now ML Vision Engineer at Apple', 'עמית לצוות, היום ב-Apple'), quote: 'A great team player; working with him is fun and very educational. Together we redesigned a huge central project to meet design-pattern practices. He works at his best under pressure.' },
+  { name: 'Tom Cohen', relation: t('Managed Itai directly', 'ניהל את איתי ישירות'), quote: 'Itai is a great team player, very technical and very professional.' },
+]
