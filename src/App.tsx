@@ -1,0 +1,212 @@
+import { useEffect, useState, type FormEvent } from 'react'
+import { degrees, jobs, links, skills, ui, type Lang } from './content.ts'
+import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
+
+type Dict = (typeof ui)[Lang]
+const avatar = 'https://github.com/itaibech.png?size=240'
+
+function useLang(): [Lang, () => void] {
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('lang') === 'he' ? 'he' : 'en'))
+  useEffect(() => {
+    localStorage.setItem('lang', lang)
+    document.documentElement.lang = lang
+    document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr'
+  }, [lang])
+  return [lang, () => setLang(lang === 'en' ? 'he' : 'en')]
+}
+
+function useTheme(): [string, () => void] {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') ?? 'dark')
+  useEffect(() => {
+    localStorage.setItem('theme', theme)
+    document.documentElement.dataset.theme = theme
+  }, [theme])
+  return [theme, () => setTheme(theme === 'dark' ? 'light' : 'dark')]
+}
+
+function Nav({ d, lang, toggleLang, theme, toggleTheme }: { d: Dict; lang: Lang; toggleLang: () => void; theme: string; toggleTheme: () => void }) {
+  return (
+    <nav className="nav">
+      <a href="#top" className="logo">IB<span>.</span></a>
+      <div className="nav-links">
+        {Object.entries(d.nav).map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+      </div>
+      <button onClick={toggleLang} aria-label="Switch language">{lang === 'en' ? 'עב' : 'EN'}</button>
+      <button onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? '☀︎' : '☾'}</button>
+    </nav>
+  )
+}
+
+function Hero({ d }: { d: Dict }) {
+  return (
+    <header id="top" className="hero">
+      <div className="hero-text">
+        <h1>{d.tagline[0]} <mark>{d.tagline[1]}</mark> {d.tagline[2]}</h1>
+        <div className="me">
+          <img src={avatar} alt={d.name} width={72} height={72} />
+          <div>
+            <small>{d.hello}</small>
+            <strong className="signature">{d.name}</strong>
+            <p>{d.headline}</p>
+          </div>
+        </div>
+        <p className="intro">{d.intro}</p>
+        <div className="actions">
+          <a className="btn primary" href="#contact">{d.cta}</a>
+          <a className="btn" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+          <a className="btn" href={links.github} target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </div>
+      <div className="orb" aria-hidden="true" />
+      <ul className="stats">
+        {d.stats.map(([n, label]) => <li key={label}><b>{n}</b>{label}</li>)}
+      </ul>
+    </header>
+  )
+}
+
+function About({ d }: { d: Dict }) {
+  return (
+    <section id="about">
+      <h2>{d.aboutTitle}</h2>
+      <ul className="cards">{d.about.map((p) => <li key={p} className="card">{p}</li>)}</ul>
+      <ul className="chips">{skills.map((s) => <li key={s}>{s}</li>)}</ul>
+    </section>
+  )
+}
+
+function Career({ d, lang }: { d: Dict; lang: Lang }) {
+  return (
+    <section id="career">
+      <h2>{d.careerTitle}</h2>
+      <ol className="timeline">
+        {jobs.map((j) => (
+          <li key={j.role.en + j.period}>
+            <span className="period">{j.period}</span>
+            <h3>{j.role[lang]} <em>@ {j.company}</em></h3>
+            <ul>{j.points.map((p) => <li key={p.en}>{p[lang]}</li>)}</ul>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function Education({ d, lang }: { d: Dict; lang: Lang }) {
+  return (
+    <section id="education">
+      <h2>{d.educationTitle}</h2>
+      <ul className="cards">
+        {degrees.map((g) => (
+          <li key={g.title.en} className="card">
+            <span className="period">{g.period}</span>
+            <h3>{g.title[lang]}</h3>
+            <p>{g.school[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function ItemList({ id, title, items, lang, empty }: { id: string; title: string; items: Item[]; lang: Lang; empty: string }) {
+  return (
+    <section id={id}>
+      <h2>{title}</h2>
+      {items.length === 0 ? <p className="muted">{empty}</p> : (
+        <ul className="cards">
+          {items.map((i) => {
+            const body = (
+              <>
+                <h3>{i.icon} {(lang === 'he' && i.title_he) || i.title_en}</h3>
+                <p>{(lang === 'he' && i.description_he) || i.description_en}</p>
+              </>
+            )
+            return <li key={i.id} className="card">{i.url ? <a href={i.url} target="_blank" rel="noreferrer">{body}</a> : body}</li>
+          })}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+function Contact({ d }: { d: Dict }) {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const f = new FormData(e.currentTarget)
+    if (f.get('website')) return setStatus('sent') // honeypot: bots fill hidden fields
+    setStatus('sending')
+    const { error } = await supabase.from('messages').insert({ name: String(f.get('name')), email: String(f.get('email')), body: String(f.get('body')) })
+    setStatus(error ? 'error' : 'sent')
+  }
+  return (
+    <section id="contact">
+      <h2>{d.contactTitle}</h2>
+      {status === 'sent' ? <p className="card">{d.sent}</p> : (
+        <form className="contact" onSubmit={submit}>
+          <input name="name" placeholder={d.contactName} aria-label={d.contactName} required maxLength={100} />
+          <input name="email" type="email" placeholder={d.contactEmail} aria-label={d.contactEmail} required maxLength={200} />
+          <textarea name="body" placeholder={d.contactBody} aria-label={d.contactBody} required maxLength={2000} rows={5} />
+          <input name="website" className="hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+          <button className="btn primary" disabled={status === 'sending'}>{d.send}</button>
+          {status === 'error' && <p role="alert">{d.error}</p>}
+        </form>
+      )}
+    </section>
+  )
+}
+
+function Footer({ d }: { d: Dict }) {
+  const [stats, setStats] = useState<Stats | null>(null)
+  const [liked, setLiked] = useState(() => localStorage.getItem('liked') === '1')
+  useEffect(() => {
+    // One view per browser session; StrictMode double-mount would otherwise count twice in dev.
+    const counted = sessionStorage.getItem('viewed')
+    sessionStorage.setItem('viewed', '1')
+    const load = counted ? supabase.from('stats').select('views,likes').single().then((r) => r.data as Stats) : bump('views')
+    load.then(setStats, () => {})
+  }, [])
+  async function like() {
+    setLiked(true)
+    localStorage.setItem('liked', '1')
+    setStats(await bump('likes'))
+  }
+  return (
+    <footer>
+      <div className="social">
+        <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href={links.github} target="_blank" rel="noreferrer">GitHub</a>
+        <a href={links.facebook} target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+      <div className="counter">
+        {stats && <span>👁 {stats.views.toLocaleString()} {d.views}</span>}
+        <button className="like" onClick={like} disabled={liked} aria-label={d.like}>♥ {stats?.likes ?? ''}</button>
+      </div>
+      <small>© {new Date().getFullYear()} Itai Bechor · {d.footer}</small>
+    </footer>
+  )
+}
+
+export function App() {
+  const [lang, toggleLang] = useLang()
+  const [theme, toggleTheme] = useTheme()
+  const [items, setItems] = useState<Item[]>([])
+  useEffect(() => { fetchItems().then(setItems, () => {}) }, [])
+  const d = ui[lang]
+  return (
+    <>
+      <Nav d={d} lang={lang} toggleLang={toggleLang} theme={theme} toggleTheme={toggleTheme} />
+      <main>
+        <Hero d={d} />
+        <About d={d} />
+        <Career d={d} lang={lang} />
+        <Education d={d} lang={lang} />
+        <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />
+        <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />
+        <Contact d={d} />
+      </main>
+      <Footer d={d} />
+    </>
+  )
+}
