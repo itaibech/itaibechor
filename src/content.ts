@@ -17,7 +17,7 @@ export interface Degree {
 
 export const ui = {
   en: {
-    nav: { about: 'About', career: 'Career', projects: 'Projects', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
+    nav: { about: 'About', career: 'Career', projects: 'Projects', games: 'Games', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
     hello: "Hi, I'm",
     name: 'Itai Bechor',
     headline: 'Full Stack Team Leader · Software Architect · AI Enthusiast',
@@ -42,6 +42,11 @@ export const ui = {
     impactTitle: 'Impact highlights',
     projectsTitle: 'Projects',
     testimonialsTitle: 'What people say',
+    gamesTitle: 'Take a break',
+    gamesIntro: 'Some of the most popular open-source web games. Click to play right here.',
+    play: 'Play',
+    close: 'Close',
+    by: 'by',
     code: 'Code',
     live: 'Live',
     educationTitle: 'Education',
@@ -60,7 +65,7 @@ export const ui = {
     footer: 'Built with React, Supabase & Claude Code',
   },
   he: {
-    nav: { about: 'אודות', career: 'קריירה', projects: 'פרויקטים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
+    nav: { about: 'אודות', career: 'קריירה', projects: 'פרויקטים', games: 'משחקים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
     hello: 'היי, אני',
     name: 'איתי בכור',
     headline: 'ראש צוות Full Stack · ארכיטקט תוכנה · חובב AI',
@@ -85,6 +90,11 @@ export const ui = {
     impactTitle: 'הישגים בולטים',
     projectsTitle: 'פרויקטים',
     testimonialsTitle: 'מה אומרים עליי',
+    gamesTitle: 'הפסקת משחק',
+    gamesIntro: 'כמה ממשחקי הקוד הפתוח הפופולריים ברשת. לחצו כדי לשחק כאן באתר.',
+    play: 'שחקו',
+    close: 'סגירה',
+    by: 'מאת',
     code: 'קוד',
     live: 'לאתר',
     educationTitle: 'השכלה',
@@ -217,7 +227,7 @@ export interface Project {
   name: string
   body: Text
   tags: string[]
-  repo: string
+  repo?: string // private repos have none
   live?: string
 }
 
@@ -237,10 +247,10 @@ export const projects: Project[] = [
     live: 'https://itaibech.github.io/itaibechor/',
   },
   {
-    name: 'Angular Micro-Frontends',
-    body: t('Micro-frontend architecture experiment: independently built Angular apps composed into one shell.', 'ניסוי בארכיטקטורת Micro-Frontends: אפליקציות Angular עצמאיות שמורכבות למעטפת אחת.'),
-    tags: ['Angular', 'Module Federation', 'TypeScript'],
-    repo: 'https://github.com/itaibech/angular-mf',
+    name: 'Word Spy · מרגל המילים',
+    body: t('Real-time multiplayer Hebrew imposter word game with bots, timers, Google sign-in and a leaderboard. Built with my son Noam.', 'משחק מילים מרובה משתתפים בזמן אמת: כולם מקבלים מילה סודית חוץ מהמרגל. עם בוטים, טיימר, התחברות עם Google וטבלת מובילים. נבנה עם הבן שלי נועם.'),
+    tags: ['Next.js', 'React', 'Supabase Realtime', 'Framer Motion', 'Tailwind'],
+    live: 'https://imposter-snowy.vercel.app',
   },
   {
     name: 'Pet Shop API',
@@ -262,4 +272,21 @@ export const testimonials: Testimonial[] = [
   { name: 'Dima Nemets', relation: t('Reported to Itai at CTrue', 'דיווח לאיתי ב-CTrue'), quote: 'He gave me and the whole application team a lot of confidence, was very open minded, and has shown a vast knowledge. I would be delighted to work with Itai in the future.' },
   { name: 'Shai Feder', relation: t('Teammate, now ML Vision Engineer at Apple', 'עמית לצוות, היום ב-Apple'), quote: 'A great team player; working with him is fun and very educational. Together we redesigned a huge central project to meet design-pattern practices. He works at his best under pressure.' },
   { name: 'Tom Cohen', relation: t('Managed Itai directly', 'ניהל את איתי ישירות'), quote: 'Itai is a great team player, very technical and very professional.' },
+]
+
+export interface Game {
+  name: string
+  icon: string
+  body: Text
+  author: string
+  src: string // embedded in an iframe only after a click
+  repo: string
+}
+
+// Open-source games hosted by their authors on GitHub Pages (no frame-blocking headers). Origins must stay in the CSP frame-src (vite.config.ts).
+export const games: Game[] = [
+  { name: 'Astray', icon: '🌀', author: 'Rye Terrell', src: 'https://wwwtyro.github.io/Astray/', repo: 'https://github.com/wwwtyro/Astray', body: t('Roll a ball out of a 3D WebGL maze. Arrow keys.', 'מגלגלים כדור החוצה ממבוך תלת-ממדי ב-WebGL. חיצים.') },
+  { name: 'React Tetris', icon: '🧱', author: 'chvin', src: 'https://chvin.github.io/react-tetris/?lan=en', repo: 'https://github.com/chvin/react-tetris', body: t('Classic falling blocks, written in React + Redux. Arrows and space.', 'הבלוקים הנופלים הקלאסיים, כתוב ב-React ו-Redux. חיצים ורווח.') },
+  { name: 'Clumsy Bird', icon: '🐦', author: 'Ellison Leão', src: 'https://ellisonleao.github.io/clumsy-bird/', repo: 'https://github.com/ellisonleao/clumsy-bird', body: t('Flap through the pipes. Click, tap or space.', 'לעוף בין הצינורות. קליק, נגיעה או רווח.') },
+  { name: 'Connect Four', icon: '🔴', author: 'Kenrick', src: 'https://kenrick95.github.io/c4/', repo: 'https://github.com/kenrick95/c4', body: t('Drop discs and line up four, against the computer or a friend.', 'מפילים דיסקיות ומסדרים ארבע ברצף, נגד המחשב או חבר.') },
 ]

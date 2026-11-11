@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
-import { degrees, impact, jobs, principles, projects, testimonials, ui } from './content.ts'
+import { readFileSync } from 'node:fs'
+import { degrees, games, impact, jobs, principles, projects, testimonials, ui } from './content.ts'
 
 const shape = (v: unknown): unknown =>
   Array.isArray(v) ? v.map(shape) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, shape(x)])) : typeof v
@@ -13,6 +14,12 @@ test('all bilingual content is translated', () => {
     ...[...principles, ...impact].flatMap((c) => [c.title, c.body]),
     ...projects.map((p) => p.body),
     ...testimonials.map((q) => q.relation),
+    ...games.map((g) => g.body),
   ]
   for (const t of texts) expect(t.he.trim(), t.en).not.toBe('')
+})
+
+test('every game origin is allowed by the CSP frame-src', () => {
+  const frameSrc = /frame-src ([^;]+)/.exec(readFileSync('vite.config.ts', 'utf8'))?.[1] ?? ''
+  for (const g of games) expect(frameSrc.split(' '), g.name).toContain(new URL(g.src).origin)
 })

@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { degrees, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Lang } from './content.ts'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -118,12 +118,42 @@ function Projects({ d, lang }: { d: Dict; lang: Lang }) {
             <p>{p.body[lang]}</p>
             <ul className="chips">{p.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
             <div className="project-links">
-              <a href={p.repo} target="_blank" rel="noreferrer">{d.code} ↗</a>
+              {p.repo && <a href={p.repo} target="_blank" rel="noreferrer">{d.code} ↗</a>}
               {p.live && <a href={p.live} target="_blank" rel="noreferrer">{d.live} ↗</a>}
             </div>
           </li>
         ))}
       </ul>
+    </section>
+  )
+}
+
+function Games({ d, lang }: { d: Dict; lang: Lang }) {
+  const [game, setGame] = useState<Game | null>(null)
+  const dialog = useRef<HTMLDialogElement>(null)
+  useEffect(() => { if (game) dialog.current?.showModal() }, [game])
+  return (
+    <section id="games">
+      <h2>{d.gamesTitle}</h2>
+      <p className="muted">{d.gamesIntro}</p>
+      <ul className="cards">
+        {games.map((g) => (
+          <li key={g.name} className="card project">
+            <h3><span className="icon" aria-hidden="true">{g.icon}</span> {g.name}</h3>
+            <p>{g.body[lang]}</p>
+            <small>{d.by} <a href={g.repo} target="_blank" rel="noreferrer">{g.author}</a></small>
+            <div className="project-links"><button className="btn primary" onClick={() => setGame(g)}>▶ {d.play}</button></div>
+          </li>
+        ))}
+      </ul>
+      <dialog ref={dialog} className="game" onClose={() => setGame(null)}>
+        {game && (
+          <>
+            <div className="game-bar"><strong>{game.icon} {game.name}</strong><button onClick={() => dialog.current?.close()} autoFocus>✕ {d.close}</button></div>
+            <iframe src={game.src} title={game.name} allow="fullscreen" sandbox="allow-scripts allow-same-origin" />
+          </>
+        )}
+      </dialog>
     </section>
   )
 }
@@ -258,6 +288,7 @@ export function App() {
         <Career d={d} lang={lang} />
         <Testimonials d={d} lang={lang} />
         <Projects d={d} lang={lang} />
+        <Games d={d} lang={lang} />
         <Education d={d} lang={lang} />
         <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />
         <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />

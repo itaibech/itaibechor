@@ -136,3 +136,11 @@ footer { max-width: 1100px; margin: 4rem auto 0; padding: 2rem 1.25rem; border-t
 .project .chips li { font-size: 0.75rem; padding: 0.15rem 0.6rem; }
 .project-links { display: flex; gap: 1rem; margin-top: auto; padding-top: 0.5rem; font-weight: 600; }
 .project-links a { color: var(--accent); text-decoration: none; }
+
+/* Games: native <dialog> with the game in an iframe */
+dialog.game { width: min(960px, 95vw); height: min(760px, 90vh); padding: 0; border: 1px solid var(--border); border-radius: 1rem; background: var(--bg2); color: var(--fg); overflow: hidden; }
+dialog.game[open] { display: flex; flex-direction: column; }
+dialog.game::backdrop { background: rgb(0 0 0 / 0.7); backdrop-filter: blur(4px); }
+.game-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); }
+dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+.card small a { display: inline; color: var(--accent); }
