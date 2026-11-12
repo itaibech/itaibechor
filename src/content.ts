@@ -53,6 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -101,6 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
@@ -197,6 +199,7 @@ export const links = {
   linkedin: 'https://www.linkedin.com/in/itaibechor/',
   github: 'https://github.com/itaibech',
   facebook: 'https://www.facebook.com/itai.bechor',
+  youtube: 'https://www.youtube.com/@itaibechor',
 }
 
 export interface Card {
@@ -232,6 +235,13 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    name: 'Rental Management · ניהול דירות',
+    body: t('Hebrew RTL app for the family rental apartments: tenants, rent, expenses, partner balances, recurring tasks and documents, with Google sign-in.', 'אפליקציה לניהול דירות ההשכרה של המשפחה: דיירים, שכר דירה, הוצאות, מאזן בין שותפים, משימות חוזרות ומסמכים, עם התחברות Google.'),
+    tags: ['Next.js', 'React', 'Mantine', 'Supabase', 'Postgres RLS', 'GitHub Pages'],
+    repo: 'https://github.com/itaibech/rentalManagement',
+    live: 'https://itaibech.github.io/rentalManagement/',
+  },
   {
     name: 'Building Management',
     body: t('Hebrew RTL app for a residents committee: payments, maintenance, EV charging and email reminders. Row-level security is the only backend.', 'אפליקציה לוועד בית: תשלומים, תחזוקה, טעינת רכבים ותזכורות במייל. ‏Row-Level Security הוא כל ה-Backend.'),
@@ -290,3 +300,17 @@ export const games: Game[] = [
   { name: 'Clumsy Bird', icon: '🐦', author: 'Ellison Leão', src: 'https://ellisonleao.github.io/clumsy-bird/', repo: 'https://github.com/ellisonleao/clumsy-bird', body: t('Flap through the pipes. Click, tap or space.', 'לעוף בין הצינורות. קליק, נגיעה או רווח.') },
   { name: 'Connect Four', icon: '🔴', author: 'Kenrick', src: 'https://kenrick95.github.io/c4/', repo: 'https://github.com/kenrick95/c4', body: t('Drop discs and line up four, against the computer or a friend.', 'מפילים דיסקיות ומסדרים ארבע ברצף, נגד המחשב או חבר.') },
 ]
+
+// Kfar Saba via Open-Meteo (free, no key). Its origin must be in the CSP connect-src (checked in content.test.ts).
+export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FJerusalem&forecast_days=1'
+
+// WMO weather codes → emoji. ponytail: emoji only, no per-code text labels.
+export function weatherIcon(code: number): string {
+  if (code === 0) return '☀️'
+  if (code <= 2) return '🌤️'
+  if (code === 3) return '☁️'
+  if (code <= 48) return '🌫️'
+  if (code <= 67 || (code >= 80 && code <= 82)) return '🌧️'
+  if (code <= 86) return '❄️'
+  return '⛈️'
+}

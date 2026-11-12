@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang } from './content.ts'
+import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, weatherIcon, weatherUrl } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -55,6 +55,7 @@ function Hero({ d }: { d: Dict }) {
           <a className="btn primary" href="#contact">{d.cta}</a>
           <a className="btn" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           <a className="btn" href={links.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a className="btn" href={links.youtube} target="_blank" rel="noreferrer">YouTube</a>
         </div>
       </div>
       <div className="orb" aria-hidden="true" />
@@ -192,6 +193,29 @@ function Education({ d, lang }: { d: Dict; lang: Lang }) {
   )
 }
 
+interface Forecast {
+  current: { temperature_2m: number; relative_humidity_2m: number; weather_code: number; wind_speed_10m: number }
+  daily: { temperature_2m_max: number[]; temperature_2m_min: number[] }
+}
+
+function Weather({ d }: { d: Dict }) {
+  const [w, setW] = useState<Forecast | null>(null)
+  useEffect(() => { fetch(weatherUrl).then((r) => r.json() as Promise<Forecast>).then(setW, () => {}) }, [])
+  if (!w) return null // ponytail: hide on failure, it's a nice-to-have
+  const c = w.current
+  return (
+    <section id="weather">
+      <h2>{d.weatherTitle}</h2>
+      <div className="card weather">
+        <span className="weather-icon" aria-hidden="true">{weatherIcon(c.weather_code)}</span>
+        <b>{Math.round(c.temperature_2m)}°</b>
+        <p>↑ {Math.round(w.daily.temperature_2m_max[0])}° ↓ {Math.round(w.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
+        <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
+      </div>
+    </section>
+  )
+}
+
 function ItemList({ id, title, items, lang, empty }: { id: string; title: string; items: Item[]; lang: Lang; empty: string }) {
   return (
     <section id={id}>
@@ -261,6 +285,7 @@ function Footer({ d }: { d: Dict }) {
         <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
         <a href={links.github} target="_blank" rel="noreferrer">GitHub</a>
         <a href={links.facebook} target="_blank" rel="noreferrer">Facebook</a>
+        <a href={links.youtube} target="_blank" rel="noreferrer">YouTube</a>
       </div>
       <div className="counter">
         {stats && <span>👁 {stats.views.toLocaleString()} {d.views}</span>}
@@ -290,6 +315,7 @@ export function App() {
         <Projects d={d} lang={lang} />
         <Games d={d} lang={lang} />
         <Education d={d} lang={lang} />
+        <Weather d={d} />
         <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />
         <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />
         <Contact d={d} />
