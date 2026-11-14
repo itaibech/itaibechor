@@ -12,7 +12,7 @@ function Root() {
     addEventListener('hashchange', on)
     return () => removeEventListener('hashchange', on)
   }, [])
-  return hash.startsWith('#/admin') ? <Admin /> : <App />
+  return hash.startsWith('#/admin') ? <Admin /> : <App page={hash.replace(/^#\/?/, '') || 'home'} />
 }
 
 createRoot(document.getElementById('root')!).render(

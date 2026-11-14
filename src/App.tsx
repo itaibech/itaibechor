@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, weatherIcon, weatherUrl } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
@@ -24,13 +24,14 @@ function useTheme(): [string, () => void] {
   return [theme, () => setTheme(theme === 'dark' ? 'light' : 'dark')]
 }
 
-function Nav({ d, lang, toggleLang, theme, toggleTheme }: { d: Dict; lang: Lang; toggleLang: () => void; theme: string; toggleTheme: () => void }) {
+function Nav({ d, lang, toggleLang, theme, toggleTheme, page, w }: { d: Dict; lang: Lang; toggleLang: () => void; theme: string; toggleTheme: () => void; page: string; w: WeatherData }) {
   return (
     <nav className="nav">
-      <a href="#top" className="logo">IB<span>.</span></a>
+      <a href="#/" className="logo">IB<span>.</span></a>
       <div className="nav-links">
-        {Object.entries(d.nav).map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        {Object.entries(d.nav).map(([id, label]) => <a key={id} href={`#/${id}`} aria-current={page === id ? 'page' : undefined}>{label}</a>)}
       </div>
+      <WeatherPill w={w} />
       <button onClick={toggleLang} aria-label="Switch language">{lang === 'en' ? 'עב' : 'EN'}</button>
       <button onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? '☀︎' : '☾'}</button>
     </nav>
@@ -52,7 +53,7 @@ function Hero({ d }: { d: Dict }) {
         </div>
         <p className="intro">{d.intro}</p>
         <div className="actions">
-          <a className="btn primary" href="#contact">{d.cta}</a>
+          <a className="btn primary" href="#/contact">{d.cta}</a>
           <a className="btn" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           <a className="btn" href={links.github} target="_blank" rel="noreferrer">GitHub</a>
           <a className="btn" href={links.youtube} target="_blank" rel="noreferrer">YouTube</a>
@@ -199,11 +200,30 @@ interface Forecast {
 }
 
 interface Reading { time: string; humidity: number; temp: number; wind: number; gust: number; pressure: number; rain: number }
+interface WeatherData { forecast: Forecast | null; station: Reading | null }
 
-function Station({ d }: { d: Dict }) {
-  const [r, setR] = useState<Reading | null>(null)
-  useEffect(() => { fetch(stationUrl).then((x) => (x.ok ? (x.json() as Promise<Reading>) : null)).then(setR, () => {}) }, [])
-  if (!r) return null // station offline or key not set
+// Fetched once in App and shared by the nav pill and the weather page. Both hide on failure.
+function useWeather(): WeatherData {
+  const [forecast, setForecast] = useState<Forecast | null>(null)
+  const [station, setStation] = useState<Reading | null>(null)
+  useEffect(() => {
+    fetch(weatherUrl).then((r) => r.json() as Promise<Forecast>).then(setForecast, () => {})
+    fetch(stationUrl).then((r) => (r.ok ? (r.json() as Promise<Reading>) : null)).then(setStation, () => {})
+  }, [])
+  return { forecast, station }
+}
+
+function WeatherPill({ w }: { w: WeatherData }) {
+  if (!w.forecast && !w.station) return null
+  return (
+    <a href="#/weather" className="weather-pill" aria-label="Weather">
+      {w.forecast && <span>{weatherIcon(w.forecast.current.weather_code)} {Math.round(w.forecast.current.temperature_2m)}°</span>}
+      {w.station && <span>📡 {w.station.temp.toFixed(1)}°</span>}
+    </a>
+  )
+}
+
+function Station({ d, r }: { d: Dict; r: Reading }) {
   return (
     <div className="card weather">
       <h3>📡 {d.stationTitle}</h3>
@@ -214,21 +234,57 @@ function Station({ d }: { d: Dict }) {
   )
 }
 
-function Weather({ d }: { d: Dict }) {
-  const [w, setW] = useState<Forecast | null>(null)
-  useEffect(() => { fetch(weatherUrl).then((r) => r.json() as Promise<Forecast>).then(setW, () => {}) }, [])
-  if (!w) return null // ponytail: hide on failure, it's a nice-to-have
-  const c = w.current
+function Forecast({ d, f }: { d: Dict; f: Forecast }) {
+  const c = f.current
+  return (
+    <div className="card weather">
+      <h3>{d.weatherTitle}</h3>
+      <span className="weather-icon" aria-hidden="true">{weatherIcon(c.weather_code)}</span>
+      <b>{Math.round(c.temperature_2m)}°</b>
+      <p>↑ {Math.round(f.daily.temperature_2m_max[0])}° ↓ {Math.round(f.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
+      <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
+    </div>
+  )
+}
+
+const monthCols = ['rain', 'rainy_days', 'wettest_day', 'temp_avg', 'temp_high_avg', 'temp_low_avg', 'temp_high', 'temp_low', 'humidity_avg', 'dewpt_avg', 'wind_avg', 'gust_max'] as const
+type Month = Record<(typeof monthCols)[number] | 'pressure_min' | 'pressure_max' | 'days', number | null> & { month: string }
+
+function History({ d, lang }: { d: Dict; lang: Lang }) {
+  const [months, setMonths] = useState<Month[]>([])
+  const [year, setYear] = useState('')
+  useEffect(() => { void supabase.from('station_monthly').select('*').order('month', { ascending: false }).then((r) => setMonths((r.data ?? []) as Month[])) }, [])
+  if (!months.length) return null
+  const years = [...new Set(months.map((m) => m.month.slice(0, 4)))]
+  const shown = months.filter((m) => m.month.startsWith(year || years[0]))
+  const rain = shown.reduce((sum, m) => sum + (m.rain ?? 0), 0)
+  const fmt = (m: Month) => new Date(m.month).toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-GB', { month: 'short', year: 'numeric' })
+  return (
+    <div className="history">
+      <h3>{d.historyTitle}</h3>
+      <div className="chips">{years.map((y) => <button key={y} aria-pressed={y === (year || years[0])} onClick={() => setYear(y)}>{y}</button>)}</div>
+      <p className="muted">🌧️ {rain.toFixed(1)} mm {d.historyTotal}</p>
+      <div className="table-wrap">
+        <table>
+          <thead><tr>{d.historyCols.map((c) => <th key={c}>{c}</th>)}</tr></thead>
+          <tbody>{shown.map((m) => (
+            <tr key={m.month}><th>{fmt(m)}</th>{monthCols.map((k) => <td key={k}>{m[k] ?? '–'}</td>)}<td>{m.pressure_min ?? '–'}–{m.pressure_max ?? '–'}</td><td>{m.days}</td></tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function Weather({ d, lang, w }: { d: Dict; lang: Lang; w: WeatherData }) {
   return (
     <section id="weather">
-      <h2>{d.weatherTitle}</h2>
-      <div className="card weather">
-        <span className="weather-icon" aria-hidden="true">{weatherIcon(c.weather_code)}</span>
-        <b>{Math.round(c.temperature_2m)}°</b>
-        <p>↑ {Math.round(w.daily.temperature_2m_max[0])}° ↓ {Math.round(w.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
-        <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
+      <h2>{d.nav.weather}</h2>
+      <div className="weather-cards">
+        {w.forecast && <Forecast d={d} f={w.forecast} />}
+        {w.station && <Station d={d} r={w.station} />}
       </div>
-      <Station d={d} />
+      <History d={d} lang={lang} />
     </section>
   )
 }
@@ -313,30 +369,31 @@ function Footer({ d }: { d: Dict }) {
   )
 }
 
-export function App() {
+export function App({ page }: { page: string }) {
   const [lang, toggleLang] = useLang()
   const [theme, toggleTheme] = useTheme()
   const [items, setItems] = useState<Item[]>([])
+  const w = useWeather()
   useEffect(() => { fetchItems().then(setItems, () => {}) }, [])
+  useEffect(() => { scrollTo(0, 0) }, [page])
   const d = ui[lang]
+  // ponytail: one page per nav item; old #section anchors land on the same page. Unknown → home.
+  const pages: Record<string, ReactNode> = {
+    home: <Hero d={d} />,
+    weather: <Weather d={d} lang={lang} w={w} />,
+    about: <><About d={d} /><Cards id="leadership" title={d.principlesTitle} cards={principles} lang={lang} /><Cards id="impact" title={d.impactTitle} cards={impact} lang={lang} /></>,
+    career: <><Career d={d} lang={lang} /><Testimonials d={d} lang={lang} /></>,
+    projects: <Projects d={d} lang={lang} />,
+    games: <Games d={d} lang={lang} />,
+    education: <Education d={d} lang={lang} />,
+    habits: <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />,
+    favorites: <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />,
+    contact: <Contact d={d} />,
+  }
   return (
     <>
-      <Nav d={d} lang={lang} toggleLang={toggleLang} theme={theme} toggleTheme={toggleTheme} />
-      <main>
-        <Hero d={d} />
-        <About d={d} />
-        <Cards id="leadership" title={d.principlesTitle} cards={principles} lang={lang} />
-        <Cards id="impact" title={d.impactTitle} cards={impact} lang={lang} />
-        <Career d={d} lang={lang} />
-        <Testimonials d={d} lang={lang} />
-        <Projects d={d} lang={lang} />
-        <Games d={d} lang={lang} />
-        <Education d={d} lang={lang} />
-        <Weather d={d} />
-        <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />
-        <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />
-        <Contact d={d} />
-      </main>
+      <Nav d={d} lang={lang} toggleLang={toggleLang} theme={theme} toggleTheme={toggleTheme} page={page} w={w} />
+      <main>{pages[page] ?? pages.home}</main>
       <Footer d={d} />
     </>
   )

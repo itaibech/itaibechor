@@ -17,7 +17,7 @@ export interface Degree {
 
 export const ui = {
   en: {
-    nav: { about: 'About', career: 'Career', projects: 'Projects', games: 'Games', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
+    nav: { weather: 'Weather', about: 'About', career: 'Career', projects: 'Projects', games: 'Games', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
     hello: "Hi, I'm",
     name: 'Itai Bechor',
     headline: 'Full Stack Team Leader · Software Architect · AI Enthusiast',
@@ -53,7 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
-    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -66,7 +66,7 @@ export const ui = {
     footer: 'Built with React, Supabase & Claude Code',
   },
   he: {
-    nav: { about: 'אודות', career: 'קריירה', projects: 'פרויקטים', games: 'משחקים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
+    nav: { weather: 'מזג אוויר', about: 'אודות', career: 'קריירה', projects: 'פרויקטים', games: 'משחקים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
     hello: 'היי, אני',
     name: 'איתי בכור',
     headline: 'ראש צוות Full Stack · ארכיטקט תוכנה · חובב AI',
@@ -102,7 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
-    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
