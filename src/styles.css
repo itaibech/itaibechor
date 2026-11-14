@@ -175,7 +175,7 @@ dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
 .item-icon { display: block; font-size: 2.2rem; margin-bottom: 0.4rem; }
 .host { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem; }
 .host img { border-radius: 3px; }
-.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; list-style: none; padding: 0; margin: 0; text-align: center; }
+.week { display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 0.5rem; list-style: none; padding: 0; margin: 0; text-align: center; }
 .week li { display: grid; gap: 0.15rem; font-size: 1.4rem; }
 .week small { font-size: 0.75rem; }
 .week b { font-size: 1rem; }
@@ -189,7 +189,7 @@ dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
 .bar { position: relative; min-height: 2px; border-radius: 4px; }
 .bar span { position: absolute; bottom: 100%; inset-inline: -1rem; text-align: center; font-size: 0.7rem; color: var(--fg); }
 .slot:hover .bar { filter: brightness(1.25); }
-@media (max-width: 760px) { .week { grid-template-columns: repeat(4, 1fr); } .cards.wide { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .cards.wide { grid-template-columns: 1fr; } }
 button.sort { all: unset; cursor: pointer; white-space: nowrap; }
 button.sort:hover, button.sort:focus-visible { color: var(--fg); }
 .chart svg { width: 100%; height: auto; display: block; overflow: visible; }

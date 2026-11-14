@@ -283,7 +283,7 @@ function Week({ d, lang, f }: { d: Dict; lang: Lang; f: Forecast }) {
       <h3>{d.weekTitle}</h3>
       <ol className="week">{f.daily.time.map((day, i) => (
         <li key={day}>
-          <small>{monthName(day, lang, { weekday: 'short' })}</small>
+          <small>{monthName(day, lang, { weekday: 'short' })} {monthName(day, lang, { day: 'numeric', month: 'numeric' })}</small>
           <span><WeatherIcon k={dayKind(f.daily.weather_code[i], f.daily.precipitation_sum[i], f.daily.cloud_cover_mean[i])} size={30} /></span>
           <b>{Math.round(f.daily.temperature_2m_max[i])}°</b>
           <small>{Math.round(f.daily.temperature_2m_min[i])}° · 💧{f.daily.precipitation_probability_max[i]}%</small>
