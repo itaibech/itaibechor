@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, weatherKind, weatherUrl, type WeatherKind } from './content.ts'
+import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, dayKind, weatherKind, weatherUrl, type WeatherKind } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -200,7 +200,7 @@ function Education({ d, lang }: { d: Dict; lang: Lang }) {
 
 interface Forecast {
   current: { temperature_2m: number; relative_humidity_2m: number; weather_code: number; wind_speed_10m: number }
-  daily: { time: string[]; weather_code: number[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] }
+  daily: { time: string[]; weather_code: number[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; precipitation_sum: number[]; cloud_cover_mean: number[] }
 }
 
 interface Reading { time: string; humidity: number; temp: number; wind: number; gust: number; pressure: number; rain: number }
@@ -224,8 +224,7 @@ const rays = (cx: number, cy: number, r1: number, r2: number, angles: number[]) 
 })
 
 // Original outline icons, stroke = currentColor so they follow the theme.
-function WeatherIcon({ code, size = 28 }: { code: number; size?: number }) {
-  const k: WeatherKind = weatherKind(code)
+function WeatherIcon({ k, size = 28 }: { k: WeatherKind; size?: number }) {
   const up = k === 'fog' || k === 'rain' || k === 'snow' || k === 'storm' // cloud sits higher to leave room below
   return (
     <svg className="wx" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label={k}>
@@ -244,7 +243,7 @@ function WeatherPill({ w }: { w: WeatherData }) {
   if (!w.forecast && !w.station) return null
   return (
     <a href="#/weather" className="weather-pill" aria-label="Weather">
-      {w.forecast && <span><WeatherIcon code={w.forecast.current.weather_code} size={18} /> {Math.round(w.forecast.current.temperature_2m)}°</span>}
+      {w.forecast && <span><WeatherIcon k={weatherKind(w.forecast.current.weather_code)} size={18} /> {Math.round(w.forecast.current.temperature_2m)}°</span>}
       {w.station && <span>📡 {w.station.temp.toFixed(1)}°</span>}
     </a>
   )
@@ -266,7 +265,7 @@ function Forecast({ d, f }: { d: Dict; f: Forecast }) {
   return (
     <div className="card weather">
       <h3>{d.weatherTitle}</h3>
-      <span className="weather-icon"><WeatherIcon code={c.weather_code} size={48} /></span>
+      <span className="weather-icon"><WeatherIcon k={weatherKind(c.weather_code)} size={48} /></span>
       <b>{Math.round(c.temperature_2m)}°</b>
       <p>↑ {Math.round(f.daily.temperature_2m_max[0])}° ↓ {Math.round(f.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
       <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
@@ -285,8 +284,7 @@ function Week({ d, lang, f }: { d: Dict; lang: Lang; f: Forecast }) {
       <ol className="week">{f.daily.time.map((day, i) => (
         <li key={day}>
           <small>{monthName(day, lang, { weekday: 'short' })}</small>
-          <span><WeatherIcon code={f.daily.weather_code[i]} size={30} /></span>
-          {[45, 48].includes(f.daily.weather_code[i]) && <small>{d.fog}</small>}
+          <span><WeatherIcon k={dayKind(f.daily.weather_code[i], f.daily.precipitation_sum[i], f.daily.cloud_cover_mean[i])} size={30} /></span>
           <b>{Math.round(f.daily.temperature_2m_max[i])}°</b>
           <small>{Math.round(f.daily.temperature_2m_min[i])}° · 💧{f.daily.precipitation_probability_max[i]}%</small>
         </li>

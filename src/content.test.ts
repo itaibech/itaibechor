@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { degrees, games, impact, jobs, principles, projects, testimonials, ui, weatherUrl } from './content.ts'
+import { degrees, games, impact, jobs, principles, projects, testimonials, ui, weatherUrl, dayKind } from './content.ts'
 
 const shape = (v: unknown): unknown =>
   Array.isArray(v) ? v.map(shape) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, shape(x)])) : typeof v
@@ -27,4 +27,12 @@ test('every game origin is allowed by the CSP frame-src', () => {
 test('weather API origin is allowed by the CSP connect-src', () => {
   const connectSrc = /connect-src ([^;]+)/.exec(readFileSync('vite.config.ts', 'utf8'))?.[1] ?? ''
   expect(connectSrc.split(' ')).toContain(new URL(weatherUrl).origin)
+})
+
+test('day icon ignores dawn fog and follows rain and cloud cover', () => {
+  expect(dayKind(45, 0, 10)).toBe('sun')
+  expect(dayKind(45, 0, 40)).toBe('partly')
+  expect(dayKind(3, 0, 80)).toBe('cloud')
+  expect(dayKind(51, 0.2, 50)).toBe('rain')
+  expect(dayKind(95, 3, 90)).toBe('storm')
 })

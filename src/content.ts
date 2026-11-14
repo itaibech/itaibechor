@@ -53,7 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
-    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year', rainChart: 'Rain by month (mm)', yearChart: 'Rain by season, Oct–Sep (mm, * = partial season)', daysRecorded: 'days recorded', seasonTempChart: 'Avg temperature by month, season vs season (°C)', fog: 'fog', tempChart: 'Temperature range by month (°C, avg low → avg high)', weekTitle: '7-day forecast', highlightsTitle: 'Highlights', stars: 'stars',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year', rainChart: 'Rain by month (mm)', yearChart: 'Rain by season, Oct–Sep (mm, * = partial season)', daysRecorded: 'days recorded', seasonTempChart: 'Avg temperature by month, season vs season (°C)', tempChart: 'Temperature range by month (°C, avg low → avg high)', weekTitle: '7-day forecast', highlightsTitle: 'Highlights', stars: 'stars',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -102,7 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
-    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה', rainChart: 'גשם לפי חודש (מ״מ)', yearChart: 'גשם לפי עונה, אוקטובר–ספטמבר (מ״מ, * = עונה חלקית)', daysRecorded: 'ימים עם נתונים', seasonTempChart: 'טמפרטורה ממוצעת לפי חודש, השוואת עונות (°C)', fog: 'ערפל', tempChart: 'טווח טמפרטורות לפי חודש (°C, ממוצע מינ׳ → ממוצע מקס׳)', weekTitle: 'תחזית ל-7 ימים', highlightsTitle: 'עיקרי הדברים', stars: 'כוכבים',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה', rainChart: 'גשם לפי חודש (מ״מ)', yearChart: 'גשם לפי עונה, אוקטובר–ספטמבר (מ״מ, * = עונה חלקית)', daysRecorded: 'ימים עם נתונים', seasonTempChart: 'טמפרטורה ממוצעת לפי חודש, השוואת עונות (°C)', tempChart: 'טווח טמפרטורות לפי חודש (°C, ממוצע מינ׳ → ממוצע מקס׳)', weekTitle: 'תחזית ל-7 ימים', highlightsTitle: 'עיקרי הדברים', stars: 'כוכבים',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
@@ -339,12 +339,12 @@ export const games: Game[] = [
   { name: 'Connect Four', stars: '280', tags: ['TypeScript', 'Canvas', 'AI opponent', 'Multiplayer'], icon: '🔴', author: 'Kenrick', src: 'https://kenrick95.github.io/c4/', repo: 'https://github.com/kenrick95/c4', body: t('Drop discs and line up four, against the computer or a friend.', 'מפילים דיסקיות ומסדרים ארבע ברצף, נגד המחשב או חבר.') },
 ]
 
-// Kfar Saba via Open-Meteo (free, no key). Its origin must be in the CSP connect-src (checked in content.test.ts).
+// Kfar Saba via Open-Meteo (free, no key), ECMWF model: it tracks local forecasts (e.g. weather2day) far better than best_match. Its origin must be in the CSP connect-src (checked in content.test.ts).
 // Home station (Weather Underground IKFARS3) through the wu-station edge function, which holds the API key.
 export const stationUrl = 'https://hyeslwlewvvjiyizoduf.supabase.co/functions/v1/wu-station'
 export const stationPage = 'https://www.wunderground.com/dashboard/pws/IKFARS3'
 
-export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FJerusalem&forecast_days=7'
+export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,cloud_cover_mean&timezone=Asia%2FJerusalem&forecast_days=7&models=ecmwf_ifs025'
 
 // WMO weather codes → icon kind (drawn as line icons by WeatherIcon in App.tsx; emoji rendered unclear on some devices).
 export type WeatherKind = 'sun' | 'partly' | 'cloud' | 'fog' | 'rain' | 'snow' | 'storm'
@@ -356,4 +356,12 @@ export function weatherKind(code: number): WeatherKind {
   if (code <= 67 || (code >= 80 && code <= 82)) return 'rain'
   if (code <= 86) return 'snow'
   return 'storm'
+}
+
+// A day's icon from its totals, not weather_code: Open-Meteo's daily code is the worst hour, so dawn fog paints a sunny day as fog.
+export function dayKind(code: number, rainMm: number, cloudPct: number): WeatherKind {
+  if (code >= 95) return 'storm'
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow'
+  if (rainMm >= 0.1) return 'rain'
+  return cloudPct < 20 ? 'sun' : cloudPct < 60 ? 'partly' : 'cloud'
 }
