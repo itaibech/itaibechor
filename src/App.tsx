@@ -373,7 +373,7 @@ function SeasonTemps({ d, lang, months }: { d: Dict; lang: Lang; months: Month[]
     <figure className="chart">
       <figcaption>{d.seasonTempChart}</figcaption>
       <ul className="legend">{seasons.map((sn, i) => <li key={sn}><i style={{ background: `var(--s${(i % 5) + 1})` }} />{sn}</li>)}</ul>
-      <svg viewBox="0 0 640 215" dir="ltr" role="img" aria-label={d.seasonTempChart}>
+      <svg viewBox="0 0 640 215" direction="ltr" role="img" aria-label={d.seasonTempChart}>
         {[0, 1, 2, 3].map((g) => { const t = lo + ((hi - lo) * g) / 3; return <g key={g}><line x1="40" x2="600" y1={y(t)} y2={y(t)} className="grid" /><text x="34" y={y(t) + 4} textAnchor="end">{Math.round(t)}°</text></g> })}
         {order.map((mi, i) => <text key={mi} x={x(i)} y="210" textAnchor="middle">{monthName(`2000-${String(mi + 1).padStart(2, '0')}-01`, lang, { month: 'short' })}</text>)}
         {seasons.map((sn, si) => {
