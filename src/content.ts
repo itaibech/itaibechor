@@ -53,7 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
-    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -102,7 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
-    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
@@ -302,6 +302,10 @@ export const games: Game[] = [
 ]
 
 // Kfar Saba via Open-Meteo (free, no key). Its origin must be in the CSP connect-src (checked in content.test.ts).
+// Home station (Weather Underground IKFARS3) through the wu-station edge function, which holds the API key.
+export const stationUrl = 'https://hyeslwlewvvjiyizoduf.supabase.co/functions/v1/wu-station'
+export const stationPage = 'https://www.wunderground.com/dashboard/pws/IKFARS3'
+
 export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FJerusalem&forecast_days=1'
 
 // WMO weather codes → emoji. ponytail: emoji only, no per-code text labels.

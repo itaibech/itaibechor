@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, weatherIcon, weatherUrl } from './content.ts'
+import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, weatherIcon, weatherUrl } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -198,6 +198,22 @@ interface Forecast {
   daily: { temperature_2m_max: number[]; temperature_2m_min: number[] }
 }
 
+interface Reading { time: string; humidity: number; temp: number; wind: number; gust: number; pressure: number; rain: number }
+
+function Station({ d }: { d: Dict }) {
+  const [r, setR] = useState<Reading | null>(null)
+  useEffect(() => { fetch(stationUrl).then((x) => (x.ok ? (x.json() as Promise<Reading>) : null)).then(setR, () => {}) }, [])
+  if (!r) return null // station offline or key not set
+  return (
+    <div className="card weather">
+      <h3>📡 {d.stationTitle}</h3>
+      <b>{r.temp.toFixed(1)}°</b>
+      <p>{d.weatherHumidity} {r.humidity}% · {d.weatherWind} {Math.round(r.wind)} km/h ({d.stationGust} {Math.round(r.gust)}) · {d.stationRain} {r.rain} mm · {d.stationPressure} {Math.round(r.pressure)} hPa</p>
+      <small>{d.stationAt} {new Date(r.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · <a href={stationPage} target="_blank" rel="noreferrer">Weather Underground</a></small>
+    </div>
+  )
+}
+
 function Weather({ d }: { d: Dict }) {
   const [w, setW] = useState<Forecast | null>(null)
   useEffect(() => { fetch(weatherUrl).then((r) => r.json() as Promise<Forecast>).then(setW, () => {}) }, [])
@@ -212,6 +228,7 @@ function Weather({ d }: { d: Dict }) {
         <p>↑ {Math.round(w.daily.temperature_2m_max[0])}° ↓ {Math.round(w.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
         <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
       </div>
+      <Station d={d} />
     </section>
   )
 }
