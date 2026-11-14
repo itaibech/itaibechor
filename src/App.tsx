@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, weatherIcon, weatherUrl } from './content.ts'
+import { degrees, games, impact, jobs, links, principles, projects, skills, testimonials, ui, type Card, type Game, type Lang, stationPage, stationUrl, weatherKind, weatherUrl, type WeatherKind } from './content.ts'
 import { bump, fetchItems, supabase, type Item, type Stats } from './supabase.ts'
 
 type Dict = (typeof ui)[Lang]
@@ -217,11 +217,34 @@ function useWeather(): WeatherData {
   return { forecast, station }
 }
 
+const cloud = 'M7 18h9.5a3.5 3.5 0 0 0 .6-6.95A5 5 0 0 0 7.4 10.6 3.7 3.7 0 0 0 7 18z'
+const rays = (cx: number, cy: number, r1: number, r2: number, angles: number[]) => angles.map((a) => {
+  const rad = (a * Math.PI) / 180
+  return <line key={a} x1={cx + r1 * Math.cos(rad)} y1={cy + r1 * Math.sin(rad)} x2={cx + r2 * Math.cos(rad)} y2={cy + r2 * Math.sin(rad)} />
+})
+
+// Original outline icons, stroke = currentColor so they follow the theme.
+function WeatherIcon({ code, size = 28 }: { code: number; size?: number }) {
+  const k: WeatherKind = weatherKind(code)
+  const up = k === 'fog' || k === 'rain' || k === 'snow' || k === 'storm' // cloud sits higher to leave room below
+  return (
+    <svg className="wx" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label={k}>
+      {k === 'sun' && <><circle cx="12" cy="12" r="4" />{rays(12, 12, 6.5, 9, [0, 45, 90, 135, 180, 225, 270, 315])}</>}
+      {k === 'partly' && <><circle cx="9" cy="8" r="3" />{rays(9, 8, 4.8, 6.6, [180, 225, 270, 315])}<path d={cloud} transform="translate(1.5 1)" /></>}
+      {k !== 'sun' && k !== 'partly' && <path d={cloud} transform={up ? 'translate(0 -4)' : undefined} />}
+      {k === 'fog' && <><line x1="5" y1="17.5" x2="19" y2="17.5" /><line x1="7" y1="20.5" x2="17" y2="20.5" /></>}
+      {k === 'rain' && [8, 12, 16].map((x) => <line key={x} x1={x} y1="16.5" x2={x - 1.5} y2="20.5" />)}
+      {k === 'snow' && [8, 12, 16].map((x) => <circle key={x} cx={x} cy={18.5} r="0.6" fill="currentColor" />)}
+      {k === 'storm' && <path d="M12.5 15l-2 3.5h3l-2 3.5" />}
+    </svg>
+  )
+}
+
 function WeatherPill({ w }: { w: WeatherData }) {
   if (!w.forecast && !w.station) return null
   return (
     <a href="#/weather" className="weather-pill" aria-label="Weather">
-      {w.forecast && <span>{weatherIcon(w.forecast.current.weather_code)} {Math.round(w.forecast.current.temperature_2m)}°</span>}
+      {w.forecast && <span><WeatherIcon code={w.forecast.current.weather_code} size={18} /> {Math.round(w.forecast.current.temperature_2m)}°</span>}
       {w.station && <span>📡 {w.station.temp.toFixed(1)}°</span>}
     </a>
   )
@@ -243,7 +266,7 @@ function Forecast({ d, f }: { d: Dict; f: Forecast }) {
   return (
     <div className="card weather">
       <h3>{d.weatherTitle}</h3>
-      <span className="weather-icon" aria-hidden="true">{weatherIcon(c.weather_code)}</span>
+      <span className="weather-icon"><WeatherIcon code={c.weather_code} size={48} /></span>
       <b>{Math.round(c.temperature_2m)}°</b>
       <p>↑ {Math.round(f.daily.temperature_2m_max[0])}° ↓ {Math.round(f.daily.temperature_2m_min[0])}° · {d.weatherWind} {Math.round(c.wind_speed_10m)} km/h · {d.weatherHumidity} {c.relative_humidity_2m}%</p>
       <small><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">{d.weatherSource}</a></small>
@@ -262,7 +285,8 @@ function Week({ d, lang, f }: { d: Dict; lang: Lang; f: Forecast }) {
       <ol className="week">{f.daily.time.map((day, i) => (
         <li key={day}>
           <small>{monthName(day, lang, { weekday: 'short' })}</small>
-          <span aria-hidden="true">{weatherIcon(f.daily.weather_code[i])}</span>
+          <span><WeatherIcon code={f.daily.weather_code[i]} size={30} /></span>
+          {[45, 48].includes(f.daily.weather_code[i]) && <small>{d.fog}</small>}
           <b>{Math.round(f.daily.temperature_2m_max[i])}°</b>
           <small>{Math.round(f.daily.temperature_2m_min[i])}° · 💧{f.daily.precipitation_probability_max[i]}%</small>
         </li>
@@ -333,6 +357,39 @@ function seasonRain(months: Month[], d: Dict) {
   return [...by].sort().map(([k, v]) => ({ label: v.days < 330 ? `${k}*` : k, tip: `${k}: ${v.rain.toFixed(1)} mm · ${v.days} ${d.daysRecorded}`, hi: Math.round(v.rain) }))
 }
 
+// Avg temperature per month (Oct→Sep), one line per season. Colour is fixed by season order (oldest = slot 1),
+// so a season keeps its colour; lines are direct-labelled at their last point and dots carry title tooltips.
+function SeasonTemps({ d, lang, months }: { d: Dict; lang: Lang; months: Month[] }) {
+  const order = [9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8] // month index Oct..Sep
+  const seasons = [...new Set(months.map((m) => season(m.month)))].sort()
+  const temps = months.filter((m) => m.temp_avg !== null).map((m) => m.temp_avg as number)
+  const lo = Math.floor(Math.min(...temps)) - 1, hi = Math.ceil(Math.max(...temps)) + 1
+  const x = (i: number) => 40 + i * 48, y = (t: number) => 190 - ((t - lo) / (hi - lo)) * 170
+  const line = (sn: string) => order.map((mi, i) => ({ i, m: months.find((m) => season(m.month) === sn && Number(m.month.slice(5, 7)) === mi + 1) })).filter((p) => p.m?.temp_avg != null)
+  // Direct labels at each line's end, nudged apart so lines ending close together don't overprint.
+  const labels = seasons.map((sn, si) => { const l = line(sn).at(-1); return l ? { sn, si, x: x(l.i) + 7, y: y(l.m!.temp_avg!) + 4 } : null }).filter((l) => l !== null).sort((a, b) => a.x - b.x || a.y - b.y)
+  labels.forEach((l, k) => { const prev = labels[k - 1]; if (prev && prev.x === l.x && l.y - prev.y < 11) l.y = prev.y + 11 })
+  return (
+    <figure className="chart">
+      <figcaption>{d.seasonTempChart}</figcaption>
+      <ul className="legend">{seasons.map((sn, i) => <li key={sn}><i style={{ background: `var(--s${(i % 5) + 1})` }} />{sn}</li>)}</ul>
+      <svg viewBox="0 0 640 215" dir="ltr" role="img" aria-label={d.seasonTempChart}>
+        {[0, 1, 2, 3].map((g) => { const t = lo + ((hi - lo) * g) / 3; return <g key={g}><line x1="40" x2="600" y1={y(t)} y2={y(t)} className="grid" /><text x="34" y={y(t) + 4} textAnchor="end">{Math.round(t)}°</text></g> })}
+        {order.map((mi, i) => <text key={mi} x={x(i)} y="210" textAnchor="middle">{monthName(`2000-${String(mi + 1).padStart(2, '0')}-01`, lang, { month: 'short' })}</text>)}
+        {seasons.map((sn, si) => {
+          const pts = line(sn)
+          const color = `var(--s${(si % 5) + 1})`
+          return <g key={sn}>
+            <polyline points={pts.map((p) => `${x(p.i)},${y(p.m!.temp_avg!)}`).join(' ')} fill="none" stroke={color} strokeWidth="2" />
+            {pts.map((p) => <circle key={p.i} cx={x(p.i)} cy={y(p.m!.temp_avg!)} r="4" fill={color} className="dot"><title>{`${sn} · ${monthName(p.m!.month, lang, { month: 'short', year: 'numeric' })}: ${p.m!.temp_avg}°`}</title></circle>)}
+          </g>
+        })}
+        {labels.map((l) => <text key={l.sn} x={l.x} y={l.y} className="direct">{l.sn}</text>)}
+      </svg>
+    </figure>
+  )
+}
+
 function History({ d, lang }: { d: Dict; lang: Lang }) {
   const [months, setMonths] = useState<Month[]>([])
   const [year, setYear] = useState('')
@@ -345,7 +402,10 @@ function History({ d, lang }: { d: Dict; lang: Lang }) {
   return (
     <div className="history">
       <h3>{d.historyTitle}</h3>
-      <Bars title={d.yearChart} color="var(--rain)" rows={seasonRain(months, d)} />
+      <div className="charts">
+        <Bars title={d.yearChart} color="var(--rain)" rows={seasonRain(months, d)} />
+        <SeasonTemps d={d} lang={lang} months={months} />
+      </div>
       <div className="chips">{years.map((y) => <button key={y} aria-pressed={y === (year || years[0])} onClick={() => setYear(y)}>{y}</button>)}</div>
       <p className="muted">🌧️ {shown.reduce((sum, m) => sum + (m.rain ?? 0), 0).toFixed(1)} mm {d.historyTotal}</p>
       <div className="charts">

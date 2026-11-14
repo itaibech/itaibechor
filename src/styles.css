@@ -10,6 +10,7 @@
   --accent3: #ec4899;
   --rain: #3b82f6;
   --heat: #d97706;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
   --font: 'Inter', 'Heebo', system-ui, sans-serif;
   --display: 'Anton', 'Heebo', Impact, sans-serif;
   color-scheme: dark;
@@ -22,6 +23,7 @@
   --card: rgba(80, 50, 160, 0.05);
   --border: rgba(80, 50, 160, 0.14);
   --rain: #2563eb;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
   color-scheme: light;
 }
 [dir='rtl'] { --font: 'Heebo', system-ui, sans-serif; --display: 'Heebo', sans-serif; }
@@ -188,7 +190,16 @@ dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
 .bar span { position: absolute; bottom: 100%; inset-inline: -1rem; text-align: center; font-size: 0.7rem; color: var(--fg); }
 .slot:hover .bar { filter: brightness(1.25); }
 @media (max-width: 760px) { .week { grid-template-columns: repeat(4, 1fr); } .cards.wide { grid-template-columns: 1fr; } }
-.history > .chart { margin: 0.75rem 0 1rem; }
-.history > .chart .bars { height: 140px; }
 button.sort { all: unset; cursor: pointer; white-space: nowrap; }
 button.sort:hover, button.sort:focus-visible { color: var(--fg); }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart svg text { font-size: 11px; fill: var(--muted); }
+.chart svg text.direct { fill: var(--fg); font-size: 10px; }
+.chart svg .grid { stroke: var(--border); }
+.chart svg .dot { stroke: var(--bg2); stroke-width: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; padding: 0; margin: 0 0 0.5rem; font-size: 0.8rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-end: 0.35rem; }
+.wx { vertical-align: middle; }
+.weather-pill span { display: inline-flex; align-items: center; gap: 0.25rem; }
+.weather-icon { color: var(--accent); display: inline-flex; }
+.week li > span { display: flex; justify-content: center; color: var(--fg); }
