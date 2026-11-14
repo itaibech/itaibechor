@@ -293,6 +293,41 @@ function Bars({ title, rows, color }: { title: string; rows: { label: string; ti
   )
 }
 
+// Table columns in display order; 'pressure_max' sorts the pressure range column.
+const sortCols = ['month', ...monthCols, 'pressure_max', 'days'] as const
+type SortKey = (typeof sortCols)[number]
+
+function MonthTable({ d, lang, rows }: { d: Dict; lang: Lang; rows: Month[] }) {
+  const [sort, setSort] = useState<{ key: SortKey; asc: boolean }>({ key: 'month', asc: false })
+  const val = (m: Month) => m[sort.key] ?? -Infinity
+  const sorted = [...rows].sort((x, y) => (val(x) < val(y) ? -1 : val(x) > val(y) ? 1 : 0) * (sort.asc ? 1 : -1))
+  const toggle = (key: SortKey) => setSort((s) => ({ key, asc: s.key === key ? !s.asc : key === 'month' }))
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead><tr>{d.historyCols.map((c, i) => {
+          const key = sortCols[i]
+          const on = sort.key === key
+          return <th key={c} aria-sort={on ? (sort.asc ? 'ascending' : 'descending') : undefined}><button className="sort" onClick={() => toggle(key)}>{c} {on ? (sort.asc ? '▲' : '▼') : ''}</button></th>
+        })}</tr></thead>
+        <tbody>{sorted.map((m) => (
+          <tr key={m.month}><th>{monthName(m.month, lang, { month: 'short', year: 'numeric' })}</th>{monthCols.map((k) => <td key={k}>{m[k] ?? '–'}</td>)}<td>{m.pressure_min ?? '–'}–{m.pressure_max ?? '–'}</td><td>{m.days}</td></tr>
+        ))}</tbody>
+      </table>
+    </div>
+  )
+}
+
+// Rain total per calendar year; years with under 330 recorded days (scattered offline days don't count) are starred as partial.
+function yearRain(months: Month[], d: Dict) {
+  const by = new Map<string, { rain: number; days: number }>()
+  for (const m of months) {
+    const y = by.get(m.month.slice(0, 4)) ?? { rain: 0, days: 0 }
+    by.set(m.month.slice(0, 4), { rain: y.rain + (m.rain ?? 0), days: y.days + (m.days ?? 0) })
+  }
+  return [...by].sort().map(([y, v]) => ({ label: v.days < 330 ? `${y}*` : y, tip: `${y}: ${v.rain.toFixed(1)} mm · ${v.days} ${d.daysRecorded}`, hi: Math.round(v.rain) }))
+}
+
 function History({ d, lang }: { d: Dict; lang: Lang }) {
   const [months, setMonths] = useState<Month[]>([])
   const [year, setYear] = useState('')
@@ -305,20 +340,14 @@ function History({ d, lang }: { d: Dict; lang: Lang }) {
   return (
     <div className="history">
       <h3>{d.historyTitle}</h3>
+      <Bars title={d.yearChart} color="var(--rain)" rows={yearRain(months, d)} />
       <div className="chips">{years.map((y) => <button key={y} aria-pressed={y === (year || years[0])} onClick={() => setYear(y)}>{y}</button>)}</div>
       <p className="muted">🌧️ {shown.reduce((sum, m) => sum + (m.rain ?? 0), 0).toFixed(1)} mm {d.historyTotal}</p>
       <div className="charts">
         <Bars title={d.rainChart} color="var(--rain)" rows={asc.map((m) => ({ label: label(m), tip: `${label(m)}: ${m.rain ?? 0} mm, ${m.rainy_days} days`, hi: m.rain ?? 0 }))} />
         <Bars title={d.tempChart} color="var(--heat)" rows={asc.map((m) => ({ label: label(m), tip: `${label(m)}: ${m.temp_low_avg}° → ${m.temp_high_avg}°`, hi: m.temp_high_avg ?? 0, lo: m.temp_low_avg ?? 0 }))} />
       </div>
-      <div className="table-wrap">
-        <table>
-          <thead><tr>{d.historyCols.map((c) => <th key={c}>{c}</th>)}</tr></thead>
-          <tbody>{shown.map((m) => (
-            <tr key={m.month}><th>{monthName(m.month, lang, { month: 'short', year: 'numeric' })}</th>{monthCols.map((k) => <td key={k}>{m[k] ?? '–'}</td>)}<td>{m.pressure_min ?? '–'}–{m.pressure_max ?? '–'}</td><td>{m.days}</td></tr>
-          ))}</tbody>
-        </table>
-      </div>
+      <MonthTable d={d} lang={lang} rows={shown} />
     </div>
   )
 }

@@ -53,7 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
-    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year', rainChart: 'Rain by month (mm)', tempChart: 'Temperature range by month (°C, avg low → avg high)', weekTitle: '7-day forecast', highlightsTitle: 'Highlights', stars: 'stars',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year', rainChart: 'Rain by month (mm)', yearChart: 'Rain by year (mm, * = partial year)', daysRecorded: 'days recorded', tempChart: 'Temperature range by month (°C, avg low → avg high)', weekTitle: '7-day forecast', highlightsTitle: 'Highlights', stars: 'stars',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -102,7 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
-    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה', rainChart: 'גשם לפי חודש (מ״מ)', tempChart: 'טווח טמפרטורות לפי חודש (°C, ממוצע מינ׳ → ממוצע מקס׳)', weekTitle: 'תחזית ל-7 ימים', highlightsTitle: 'עיקרי הדברים', stars: 'כוכבים',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה', rainChart: 'גשם לפי חודש (מ״מ)', yearChart: 'גשם לפי שנה (מ״מ, * = שנה חלקית)', daysRecorded: 'ימים עם נתונים', tempChart: 'טווח טמפרטורות לפי חודש (°C, ממוצע מינ׳ → ממוצע מקס׳)', weekTitle: 'תחזית ל-7 ימים', highlightsTitle: 'עיקרי הדברים', stars: 'כוכבים',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
@@ -351,7 +351,7 @@ export function weatherIcon(code: number): string {
   if (code === 0) return '☀️'
   if (code <= 2) return '⛅'
   if (code === 3) return '☁️'
-  if (code <= 48) return '🌫️'
+  if (code <= 48) return '🌁' // fog; Apple's 🌫️ renders as a grey square that reads as a broken image
   if (code <= 67 || (code >= 80 && code <= 82)) return '🌧️'
   if (code <= 86) return '❄️'
   return '⛈️'
