@@ -429,25 +429,37 @@ function Weather({ d, lang, w }: { d: Dict; lang: Lang; w: WeatherData }) {
   )
 }
 
-function ItemList({ id, title, items, lang, empty }: { id: string; title: string; items: Item[]; lang: Lang; empty: string }) {
+function ItemCards({ items, lang }: { items: Item[]; lang: Lang }) {
+  return (
+    <ul className="cards">
+      {items.map((i) => {
+        const body = (
+          <>
+            <span className="item-icon" aria-hidden="true">{i.icon}</span>
+            <h3>{(lang === 'he' && i.title_he) || i.title_en}</h3>
+            <p>{(lang === 'he' && i.description_he) || i.description_en}</p>
+            {i.url && <small className="host"><img src={`https://icons.duckduckgo.com/ip3/${new URL(i.url).hostname}.ico`} alt="" width={16} height={16} loading="lazy" /> {new URL(i.url).hostname.replace(/^www\./, '')} ↗</small>}
+          </>
+        )
+        return <li key={i.id} className="card item">{i.url ? <a href={i.url} target="_blank" rel="noreferrer">{body}</a> : body}</li>
+      })}
+    </ul>
+  )
+}
+
+// groups: category key → heading, in display order; items in unknown categories go last, ungrouped.
+function ItemList({ id, title, items, lang, empty, groups }: { id: string; title: string; items: Item[]; lang: Lang; empty: string; groups?: Record<string, string> }) {
+  const keys = groups ? Object.keys(groups) : []
+  const rest = items.filter((i) => !keys.includes(i.category))
   return (
     <section id={id}>
       <h2>{title}</h2>
-      {items.length === 0 ? <p className="muted">{empty}</p> : (
-        <ul className="cards">
-          {items.map((i) => {
-            const body = (
-              <>
-                <span className="item-icon" aria-hidden="true">{i.icon}</span>
-                <h3>{(lang === 'he' && i.title_he) || i.title_en}</h3>
-                <p>{(lang === 'he' && i.description_he) || i.description_en}</p>
-                {i.url && <small className="host"><img src={`https://icons.duckduckgo.com/ip3/${new URL(i.url).hostname}.ico`} alt="" width={16} height={16} loading="lazy" /> {new URL(i.url).hostname.replace(/^www\./, '')} ↗</small>}
-              </>
-            )
-            return <li key={i.id} className="card item">{i.url ? <a href={i.url} target="_blank" rel="noreferrer">{body}</a> : body}</li>
-          })}
-        </ul>
-      )}
+      {items.length === 0 && <p className="muted">{empty}</p>}
+      {keys.map((k) => {
+        const group = items.filter((i) => i.category === k)
+        return group.length > 0 && <div key={k}><h3 className="group-title">{groups?.[k]}</h3><ItemCards items={group} lang={lang} /></div>
+      })}
+      {rest.length > 0 && <ItemCards items={rest} lang={lang} />}
     </section>
   )
 }
@@ -524,7 +536,7 @@ export function App({ page }: { page: string }) {
   const pages: Record<string, ReactNode> = {
     projects: <Projects d={d} lang={lang} />,
     games: <Games d={d} lang={lang} />,
-    favorites: <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} />,
+    favorites: <ItemList id="favorites" title={d.favoritesTitle} items={items.filter((i) => i.kind === 'favorite')} lang={lang} empty={d.empty} groups={d.favoriteGroups} />,
     habits: <ItemList id="habits" title={d.habitsTitle} items={items.filter((i) => i.kind === 'habit')} lang={lang} empty={d.empty} />,
     weather: <Weather d={d} lang={lang} w={w} />,
     contact: <Contact d={d} />,

@@ -17,6 +17,7 @@ export interface Item {
   description_he: string
   url: string | null
   icon: string
+  category: string
   sort: number
 }
 

@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { fetchItems, supabase, type Item, type Message } from './supabase.ts'
 
 const ADMIN = 'itai.bechor@gmail.com' // UI hint only; RLS (is_admin) enforces it.
-const blank = { kind: 'habit', title_en: '', title_he: '', description_en: '', description_he: '', url: '', icon: '', sort: 0 }
+const blank = { kind: 'habit', title_en: '', title_he: '', description_en: '', description_he: '', url: '', icon: '', category: '', sort: 0 }
 type Draft = typeof blank & { id?: string }
 
 function useSession(): Session | null | undefined {
@@ -33,6 +33,7 @@ function ItemForm({ draft, onSaved }: { draft: Draft; onSaved: () => void }) {
   return (
     <form className="contact" onSubmit={save} key={draft.id ?? 'new'}>
       <select name="kind" defaultValue={draft.kind}><option value="habit">Habit</option><option value="favorite">Favourite page</option></select>
+      <input name="category" placeholder="Category (news, shopping, social, ai, tools, fun, ref, dev)" defaultValue={draft.category} maxLength={20} />
       <input name="icon" placeholder="Emoji icon" defaultValue={draft.icon} maxLength={8} />
       <input name="title_en" placeholder="Title (EN)" defaultValue={draft.title_en} required maxLength={120} />
       <input name="title_he" placeholder="כותרת (HE)" defaultValue={draft.title_he} dir="rtl" maxLength={120} />

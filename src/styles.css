@@ -203,3 +203,4 @@ button.sort:hover, button.sort:focus-visible { color: var(--fg); }
 .weather-pill span { display: inline-flex; align-items: center; gap: 0.25rem; }
 .weather-icon { color: var(--accent); display: inline-flex; }
 .week li > span { display: flex; justify-content: center; color: var(--fg); }
+.group-title { margin: 1.75rem 0 .75rem; font-size: 1.05rem; color: var(--muted); }
