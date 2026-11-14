@@ -12,7 +12,7 @@ test('Hebrew UI has exactly the same keys and list lengths as English', () => {
 test('all bilingual content is translated', () => {
   const texts = [...jobs.flatMap((j) => [j.role, ...j.points]), ...degrees.flatMap((d) => [d.school, d.title]),
     ...[...principles, ...impact].flatMap((c) => [c.title, c.body]),
-    ...projects.map((p) => p.body),
+    ...projects.flatMap((p) => [p.body, ...p.highlights]),
     ...testimonials.map((q) => q.relation),
     ...games.map((g) => g.body),
   ]

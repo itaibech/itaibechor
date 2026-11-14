@@ -17,7 +17,7 @@ export interface Degree {
 
 export const ui = {
   en: {
-    nav: { weather: 'Weather', about: 'About', career: 'Career', projects: 'Projects', games: 'Games', education: 'Education', habits: 'Habits', favorites: 'Favourites', contact: 'Contact' },
+    nav: { about: 'About', projects: 'Projects', games: 'Games', favorites: 'Favourites', habits: 'Habits', weather: 'Weather', contact: 'Contact' },
     hello: "Hi, I'm",
     name: 'Itai Bechor',
     headline: 'Full Stack Team Leader · Software Architect · AI Enthusiast',
@@ -53,7 +53,7 @@ export const ui = {
     habitsTitle: 'Habits',
     favoritesTitle: 'Favourite pages',
     empty: 'Coming soon…',
-    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year',
+    weatherTitle: 'Kfar Saba weather', weatherWind: 'wind', weatherHumidity: 'humidity', weatherSource: 'Open-Meteo', stationTitle: 'My home station · Havazelet HaSharon', stationRain: 'rain today', stationGust: 'gusts', stationPressure: 'pressure', stationAt: 'updated', historyTitle: 'Station history by month', historyCols: ['Month', 'Rain mm', 'Rainy days', 'Wettest day', 'Avg °C', 'Avg high', 'Avg low', 'Max °C', 'Min °C', 'Humidity %', 'Dew point', 'Avg wind', 'Max gust', 'Pressure hPa', 'Days'], historyTotal: 'rain this year', rainChart: 'Rain by month (mm)', tempChart: 'Temperature range by month (°C, avg low → avg high)', weekTitle: '7-day forecast', highlightsTitle: 'Highlights', stars: 'stars',
     contactTitle: "Let's talk",
     contactName: 'Your name',
     contactEmail: 'Your email',
@@ -66,7 +66,7 @@ export const ui = {
     footer: 'Built with React, Supabase & Claude Code',
   },
   he: {
-    nav: { weather: 'מזג אוויר', about: 'אודות', career: 'קריירה', projects: 'פרויקטים', games: 'משחקים', education: 'השכלה', habits: 'הרגלים', favorites: 'מועדפים', contact: 'צור קשר' },
+    nav: { about: 'אודות', projects: 'פרויקטים', games: 'משחקים', favorites: 'מועדפים', habits: 'הרגלים', weather: 'מזג אוויר', contact: 'צור קשר' },
     hello: 'היי, אני',
     name: 'איתי בכור',
     headline: 'ראש צוות Full Stack · ארכיטקט תוכנה · חובב AI',
@@ -102,7 +102,7 @@ export const ui = {
     habitsTitle: 'הרגלים',
     favoritesTitle: 'דפים מועדפים',
     empty: 'בקרוב…',
-    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה',
+    weatherTitle: 'מזג האוויר בכפר סבא', weatherWind: 'רוח', weatherHumidity: 'לחות', weatherSource: 'Open-Meteo', stationTitle: 'תחנה מטאורולוגית בבית · חבצלת השרון', stationRain: 'גשם היום', stationGust: 'משבים', stationPressure: 'לחץ', stationAt: 'עודכן', historyTitle: 'היסטוריית התחנה לפי חודש', historyCols: ['חודש', 'גשם מ״מ', 'ימי גשם', 'היום הגשום', 'ממוצע °C', 'ממוצע מקס׳', 'ממוצע מינ׳', 'מקס׳ °C', 'מינ׳ °C', 'לחות %', 'נקודת טל', 'רוח ממוצעת', 'משב מקס׳', 'לחץ hPa', 'ימים'], historyTotal: 'גשם השנה', rainChart: 'גשם לפי חודש (מ״מ)', tempChart: 'טווח טמפרטורות לפי חודש (°C, ממוצע מינ׳ → ממוצע מקס׳)', weekTitle: 'תחזית ל-7 ימים', highlightsTitle: 'עיקרי הדברים', stars: 'כוכבים',
     contactTitle: 'בואו נדבר',
     contactName: 'שם',
     contactEmail: 'אימייל',
@@ -232,6 +232,8 @@ export interface Project {
   tags: string[]
   repo?: string // private repos have none
   live?: string
+  year: string
+  highlights: Text[]
 }
 
 export const projects: Project[] = [
@@ -240,6 +242,13 @@ export const projects: Project[] = [
     body: t('Hebrew RTL app for the family rental apartments: tenants, rent, expenses, partner balances, recurring tasks and documents, with Google sign-in.', 'אפליקציה לניהול דירות ההשכרה של המשפחה: דיירים, שכר דירה, הוצאות, מאזן בין שותפים, משימות חוזרות ומסמכים, עם התחברות Google.'),
     tags: ['Next.js', 'React', 'Mantine', 'Supabase', 'Postgres RLS', 'GitHub Pages'],
     repo: 'https://github.com/itaibech/rentalManagement',
+    year: '2026',
+    highlights: [
+      t('Tracks each apartment, tenant and monthly rent, including which partner each check was deposited to.', 'מעקב אחרי כל דירה, דייר ושכר דירה חודשי, כולל לאיזה שותף הופקד כל צ׳ק.'),
+      t('Computes every partner’s balance from their share and suggests the transfers that settle it.', 'מחשב את המאזן של כל שותף לפי חלקו ומציע את ההעברות שמאפסות אותו.'),
+      t('Recurring tasks such as insurance renewals, plus document attachments.', 'משימות חוזרות כמו חידוש ביטוח, וצירוף מסמכים.'),
+      t('Runs on a shared Supabase backend, one schema per app, with Google sign-in and RLS.', 'רץ על Backend משותף ב-Supabase, סכמה לכל אפליקציה, עם התחברות Google ו-RLS.'),
+    ],
     live: 'https://itaibech.github.io/rentalManagement/',
   },
   {
@@ -247,6 +256,13 @@ export const projects: Project[] = [
     body: t('Hebrew RTL app for a residents committee: payments, maintenance, EV charging and email reminders. Row-level security is the only backend.', 'אפליקציה לוועד בית: תשלומים, תחזוקה, טעינת רכבים ותזכורות במייל. ‏Row-Level Security הוא כל ה-Backend.'),
     tags: ['React', 'TypeScript', 'Supabase', 'Postgres RLS', 'Edge Functions', 'GitHub Actions'],
     repo: 'https://github.com/itaibech/buildingManagement',
+    year: '2026',
+    highlights: [
+      t('Residents pay committee fees and track maintenance requests in one place.', 'הדיירים משלמים ועד בית ועוקבים אחרי קריאות תחזוקה במקום אחד.'),
+      t('EV charging usage and billing per apartment.', 'מעקב וחיוב על טעינת רכבים חשמליים לפי דירה.'),
+      t('Automatic email reminders from Supabase Edge Functions.', 'תזכורות אוטומטיות במייל מ-Supabase Edge Functions.'),
+      t('Built feature by feature, one PR each, with Claude Code.', 'נבנה פיצ׳ר אחרי פיצ׳ר, PR לכל אחד, עם Claude Code.'),
+    ],
     live: 'https://itaibech.github.io/buildingManagement/',
   },
   {
@@ -254,6 +270,13 @@ export const projects: Project[] = [
     body: t('Bilingual personal site with an admin page, contact form and counters, built with Claude Code.', 'אתר אישי דו-לשוני עם עמוד ניהול, טופס יצירת קשר ומונים, שנבנה עם Claude Code.'),
     tags: ['React', 'Vite', 'Supabase', 'CSP', 'Claude Code'],
     repo: 'https://github.com/itaibech/itaibechor',
+    year: '2026',
+    highlights: [
+      t('English and Hebrew with full right-to-left layout, dark and light themes.', 'אנגלית ועברית עם תמיכה מלאה בימין-לשמאל, ערכת נושא כהה ובהירה.'),
+      t('Live data from my home weather station, cached in Postgres and synced nightly.', 'נתונים חיים מתחנת מזג האוויר בבית, נשמרים ב-Postgres ומסונכרנים כל לילה.'),
+      t('Admin page with Google-only sign-in; Row-Level Security is the only backend.', 'עמוד ניהול עם התחברות Google בלבד; ‏Row-Level Security הוא כל ה-Backend.'),
+      t('Strict Content Security Policy and click-to-play game embeds.', 'מדיניות CSP קפדנית ומשחקים שנטענים רק בלחיצה.'),
+    ],
     live: 'https://itaibech.github.io/itaibechor/',
   },
   {
@@ -261,12 +284,25 @@ export const projects: Project[] = [
     body: t('Real-time multiplayer Hebrew imposter word game with bots, timers, Google sign-in and a leaderboard. Built with my son Noam.', 'משחק מילים מרובה משתתפים בזמן אמת: כולם מקבלים מילה סודית חוץ מהמרגל. עם בוטים, טיימר, התחברות עם Google וטבלת מובילים. נבנה עם הבן שלי נועם.'),
     tags: ['Next.js', 'React', 'Supabase Realtime', 'Framer Motion', 'Tailwind'],
     live: 'https://imposter-snowy.vercel.app',
+    year: '2026',
+    highlights: [
+      t('Everyone gets the secret word except the spy, who must bluff and blend in.', 'כולם מקבלים את המילה הסודית חוץ מהמרגל, שצריך לבלף ולהשתלב.'),
+      t('Real-time rooms over Supabase Realtime, with bots to fill empty seats.', 'חדרים בזמן אמת על Supabase Realtime, עם בוטים שממלאים מקומות פנויים.'),
+      t('Round timers, Google sign-in and a leaderboard.', 'טיימר לכל סבב, התחברות Google וטבלת מובילים.'),
+    ],
+
   },
   {
     name: 'Pet Shop API',
     body: t('REST API for a pet shop catalog: add, find, update and remove animals.', 'REST API לקטלוג חנות חיות: הוספה, חיפוש, עדכון ומחיקה.'),
     tags: ['NestJS', 'Node.js', 'TypeScript', 'REST'],
     repo: 'https://github.com/itaibech/pethshop-nest',
+    year: '2023',
+    highlights: [
+      t('CRUD endpoints to add, find, update and remove animals from the catalog.', 'נקודות קצה להוספה, חיפוש, עדכון ומחיקה של חיות מהקטלוג.'),
+      t('Structured with NestJS modules, controllers and services.', 'בנוי עם מודולים, Controllers ו-Services של NestJS.'),
+    ],
+
   },
 ]
 
@@ -291,14 +327,16 @@ export interface Game {
   author: string
   src: string // embedded in an iframe only after a click
   repo: string
+  stars: string
+  tags: string[]
 }
 
 // Open-source games hosted by their authors on GitHub Pages (no frame-blocking headers). Origins must stay in the CSP frame-src (vite.config.ts).
 export const games: Game[] = [
-  { name: 'Astray', icon: '🌀', author: 'Rye Terrell', src: 'https://wwwtyro.github.io/Astray/', repo: 'https://github.com/wwwtyro/Astray', body: t('Roll a ball out of a 3D WebGL maze. Arrow keys.', 'מגלגלים כדור החוצה ממבוך תלת-ממדי ב-WebGL. חיצים.') },
-  { name: 'React Tetris', icon: '🧱', author: 'chvin', src: 'https://chvin.github.io/react-tetris/?lan=en', repo: 'https://github.com/chvin/react-tetris', body: t('Classic falling blocks, written in React + Redux. Arrows and space.', 'הבלוקים הנופלים הקלאסיים, כתוב ב-React ו-Redux. חיצים ורווח.') },
-  { name: 'Clumsy Bird', icon: '🐦', author: 'Ellison Leão', src: 'https://ellisonleao.github.io/clumsy-bird/', repo: 'https://github.com/ellisonleao/clumsy-bird', body: t('Flap through the pipes. Click, tap or space.', 'לעוף בין הצינורות. קליק, נגיעה או רווח.') },
-  { name: 'Connect Four', icon: '🔴', author: 'Kenrick', src: 'https://kenrick95.github.io/c4/', repo: 'https://github.com/kenrick95/c4', body: t('Drop discs and line up four, against the computer or a friend.', 'מפילים דיסקיות ומסדרים ארבע ברצף, נגד המחשב או חבר.') },
+  { name: 'Astray', stars: '600', tags: ['WebGL', 'Three.js', 'Box2D', '3D'], icon: '🌀', author: 'Rye Terrell', src: 'https://wwwtyro.github.io/Astray/', repo: 'https://github.com/wwwtyro/Astray', body: t('Roll a ball out of a 3D WebGL maze. Arrow keys.', 'מגלגלים כדור החוצה ממבוך תלת-ממדי ב-WebGL. חיצים.') },
+  { name: 'React Tetris', stars: '8.7k', tags: ['React', 'Redux', 'Immutable.js', 'Puzzle'], icon: '🧱', author: 'chvin', src: 'https://chvin.github.io/react-tetris/?lan=en', repo: 'https://github.com/chvin/react-tetris', body: t('Classic falling blocks, written in React + Redux. Arrows and space.', 'הבלוקים הנופלים הקלאסיים, כתוב ב-React ו-Redux. חיצים ורווח.') },
+  { name: 'Clumsy Bird', stars: '1.6k', tags: ['melonJS', 'Canvas', 'Arcade'], icon: '🐦', author: 'Ellison Leão', src: 'https://ellisonleao.github.io/clumsy-bird/', repo: 'https://github.com/ellisonleao/clumsy-bird', body: t('Flap through the pipes. Click, tap or space.', 'לעוף בין הצינורות. קליק, נגיעה או רווח.') },
+  { name: 'Connect Four', stars: '280', tags: ['TypeScript', 'Canvas', 'AI opponent', 'Multiplayer'], icon: '🔴', author: 'Kenrick', src: 'https://kenrick95.github.io/c4/', repo: 'https://github.com/kenrick95/c4', body: t('Drop discs and line up four, against the computer or a friend.', 'מפילים דיסקיות ומסדרים ארבע ברצף, נגד המחשב או חבר.') },
 ]
 
 // Kfar Saba via Open-Meteo (free, no key). Its origin must be in the CSP connect-src (checked in content.test.ts).
@@ -306,12 +344,12 @@ export const games: Game[] = [
 export const stationUrl = 'https://hyeslwlewvvjiyizoduf.supabase.co/functions/v1/wu-station'
 export const stationPage = 'https://www.wunderground.com/dashboard/pws/IKFARS3'
 
-export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FJerusalem&forecast_days=1'
+export const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=32.175&longitude=34.907&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FJerusalem&forecast_days=7'
 
 // WMO weather codes → emoji. ponytail: emoji only, no per-code text labels.
 export function weatherIcon(code: number): string {
   if (code === 0) return '☀️'
-  if (code <= 2) return '🌤️'
+  if (code <= 2) return '⛅'
   if (code === 3) return '☁️'
   if (code <= 48) return '🌫️'
   if (code <= 67 || (code >= 80 && code <= 82)) return '🌧️'

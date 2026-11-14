@@ -8,6 +8,8 @@
   --accent: #fbbf24;
   --accent2: #a855f7;
   --accent3: #ec4899;
+  --rain: #3b82f6;
+  --heat: #d97706;
   --font: 'Inter', 'Heebo', system-ui, sans-serif;
   --display: 'Anton', 'Heebo', Impact, sans-serif;
   color-scheme: dark;
@@ -19,6 +21,7 @@
   --muted: #5b5478;
   --card: rgba(80, 50, 160, 0.05);
   --border: rgba(80, 50, 160, 0.14);
+  --rain: #2563eb;
   color-scheme: light;
 }
 [dir='rtl'] { --font: 'Heebo', system-ui, sans-serif; --display: 'Heebo', sans-serif; }
@@ -164,3 +167,24 @@ dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
 .history table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .history th, .history td { padding: 0.5rem 0.7rem; text-align: start; white-space: nowrap; border-bottom: 1px solid var(--border); }
 .history thead th { color: var(--muted); font-weight: 600; }
+.cards.wide { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+.highlights { margin: 0; padding-inline-start: 1.1rem; color: var(--muted); font-size: 0.9rem; }
+.item { position: relative; }
+.item-icon { display: block; font-size: 2.2rem; margin-bottom: 0.4rem; }
+.host { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem; }
+.host img { border-radius: 3px; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; list-style: none; padding: 0; margin: 0; text-align: center; }
+.week li { display: grid; gap: 0.15rem; font-size: 1.4rem; }
+.week small { font-size: 0.75rem; }
+.week b { font-size: 1rem; }
+#weather > .card { margin-top: 1rem; }
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.chart { margin: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--card); }
+.chart figcaption { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; }
+.bars { display: flex; align-items: flex-end; gap: 2px; height: 180px; padding-bottom: 1.4rem; background: repeating-linear-gradient(to top, var(--border) 0 1px, transparent 1px 25%); }
+.slot { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+.slot small { position: absolute; bottom: -1.3rem; inset-inline: 0; text-align: center; font-size: 0.65rem; }
+.bar { position: relative; min-height: 2px; border-radius: 4px; }
+.bar span { position: absolute; bottom: 100%; inset-inline: -1rem; text-align: center; font-size: 0.7rem; color: var(--fg); }
+.slot:hover .bar { filter: brightness(1.25); }
+@media (max-width: 760px) { .week { grid-template-columns: repeat(4, 1fr); } .cards.wide { grid-template-columns: 1fr; } }
