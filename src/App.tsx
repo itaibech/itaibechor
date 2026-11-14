@@ -318,14 +318,19 @@ function MonthTable({ d, lang, rows }: { d: Dict; lang: Lang; rows: Month[] }) {
   )
 }
 
-// Rain total per calendar year; years with under 330 recorded days (scattered offline days don't count) are starred as partial.
-function yearRain(months: Month[], d: Dict) {
+// Rain total per rain season (Oct–Sep, how rainfall is compared in Israel); under 330 recorded days is starred as partial.
+const season = (iso: string) => {
+  const y = Number(iso.slice(0, 4)) - (Number(iso.slice(5, 7)) < 10 ? 1 : 0)
+  return `${y}/${String(y + 1).slice(2)}`
+}
+
+function seasonRain(months: Month[], d: Dict) {
   const by = new Map<string, { rain: number; days: number }>()
   for (const m of months) {
-    const y = by.get(m.month.slice(0, 4)) ?? { rain: 0, days: 0 }
-    by.set(m.month.slice(0, 4), { rain: y.rain + (m.rain ?? 0), days: y.days + (m.days ?? 0) })
+    const s = by.get(season(m.month)) ?? { rain: 0, days: 0 }
+    by.set(season(m.month), { rain: s.rain + (m.rain ?? 0), days: s.days + (m.days ?? 0) })
   }
-  return [...by].sort().map(([y, v]) => ({ label: v.days < 330 ? `${y}*` : y, tip: `${y}: ${v.rain.toFixed(1)} mm · ${v.days} ${d.daysRecorded}`, hi: Math.round(v.rain) }))
+  return [...by].sort().map(([k, v]) => ({ label: v.days < 330 ? `${k}*` : k, tip: `${k}: ${v.rain.toFixed(1)} mm · ${v.days} ${d.daysRecorded}`, hi: Math.round(v.rain) }))
 }
 
 function History({ d, lang }: { d: Dict; lang: Lang }) {
@@ -340,7 +345,7 @@ function History({ d, lang }: { d: Dict; lang: Lang }) {
   return (
     <div className="history">
       <h3>{d.historyTitle}</h3>
-      <Bars title={d.yearChart} color="var(--rain)" rows={yearRain(months, d)} />
+      <Bars title={d.yearChart} color="var(--rain)" rows={seasonRain(months, d)} />
       <div className="chips">{years.map((y) => <button key={y} aria-pressed={y === (year || years[0])} onClick={() => setYear(y)}>{y}</button>)}</div>
       <p className="muted">🌧️ {shown.reduce((sum, m) => sum + (m.rain ?? 0), 0).toFixed(1)} mm {d.historyTotal}</p>
       <div className="charts">
