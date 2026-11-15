@@ -203,7 +203,9 @@ interface Forecast {
   daily: { time: string[]; weather_code: number[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; precipitation_sum: number[]; cloud_cover_mean: number[] }
 }
 
-interface Reading { time: string; humidity: number; temp: number; wind: number; gust: number; pressure: number; rain: number }
+// Any sensor value can be null while the station's outdoor unit is offline.
+interface Reading { time: string; humidity: number | null; temp: number | null; wind: number | null; gust: number | null; pressure: number | null; rain: number | null }
+const val = (n: number | null, digits = 0): string => (n == null ? '—' : n.toFixed(digits))
 interface WeatherData { forecast: Forecast | null; station: Reading | null }
 
 // Fetched once in App and shared by the nav pill and the weather page. Both hide on failure.
@@ -244,7 +246,7 @@ function WeatherPill({ w }: { w: WeatherData }) {
   return (
     <a href="#/weather" className="weather-pill" aria-label="Weather">
       {w.forecast && <span><WeatherIcon k={weatherKind(w.forecast.current.weather_code)} size={18} /> {Math.round(w.forecast.current.temperature_2m)}°</span>}
-      {w.station && <span>📡 {w.station.temp.toFixed(1)}°</span>}
+      {w.station?.temp != null && <span>📡 {w.station.temp.toFixed(1)}°</span>}
     </a>
   )
 }
@@ -253,8 +255,8 @@ function Station({ d, r }: { d: Dict; r: Reading }) {
   return (
     <div className="card weather">
       <h3>📡 {d.stationTitle}</h3>
-      <b>{r.temp.toFixed(1)}°</b>
-      <p>{d.weatherHumidity} {r.humidity}% · {d.weatherWind} {Math.round(r.wind)} km/h ({d.stationGust} {Math.round(r.gust)}) · {d.stationRain} {r.rain} mm · {d.stationPressure} {Math.round(r.pressure)} hPa</p>
+      <b>{val(r.temp, 1)}°</b>
+      <p>{d.weatherHumidity} {val(r.humidity)}% · {d.weatherWind} {val(r.wind)} km/h ({d.stationGust} {val(r.gust)}) · {d.stationRain} {val(r.rain, 1)} mm · {d.stationPressure} {val(r.pressure)} hPa</p>
       <small>{d.stationAt} {new Date(r.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · <a href={stationPage} target="_blank" rel="noreferrer">Weather Underground</a></small>
     </div>
   )
