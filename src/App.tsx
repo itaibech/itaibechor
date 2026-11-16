@@ -44,7 +44,7 @@ function Hero({ d }: { d: Dict }) {
       <div className="hero-text">
         <h1>{d.tagline[0]} <mark>{d.tagline[1]}</mark> {d.tagline[2]}</h1>
         <div className="me">
-          <img src={avatar} alt={d.name} width={72} height={72} />
+          <img src={avatar} alt={d.name} width={72} height={72} fetchPriority="high" />
           <div>
             <small>{d.hello}</small>
             <strong className="signature">{d.name}</strong>
@@ -481,8 +481,8 @@ function Contact({ d }: { d: Dict }) {
       <h2>{d.contactTitle}</h2>
       {status === 'sent' ? <p className="card">{d.sent}</p> : (
         <form className="contact" onSubmit={submit}>
-          <input name="name" placeholder={d.contactName} aria-label={d.contactName} required maxLength={100} />
-          <input name="email" type="email" placeholder={d.contactEmail} aria-label={d.contactEmail} required maxLength={200} />
+          <input name="name" autoComplete="name" placeholder={d.contactName} aria-label={d.contactName} required maxLength={100} />
+          <input name="email" type="email" autoComplete="email" placeholder={d.contactEmail} aria-label={d.contactEmail} required maxLength={200} />
           <textarea name="body" placeholder={d.contactBody} aria-label={d.contactBody} required maxLength={2000} rows={5} />
           <input name="website" className="hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
           <button className="btn primary" disabled={status === 'sending'}>{d.send}</button>

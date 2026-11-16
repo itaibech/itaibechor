@@ -91,7 +91,11 @@ mark { background: var(--accent); color: #1a1433; padding: 0 0.12em; border-radi
   filter: blur(40px); opacity: 0.7; animation: spin 14s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .orb { animation: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; } html { scroll-behavior: auto; }
+  *, *::before, *::after, ::backdrop { transition: none !important; animation: none !important; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
 .stats { grid-column: 1 / -1; display: flex; gap: 1rem; list-style: none; padding: 0; margin: 1rem 0 0; flex-wrap: wrap; }
 .stats li { flex: 1; min-width: 150px; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 1rem; color: var(--muted); }
 .stats b { display: block; font-family: var(--display); font-size: 2.2rem; color: var(--fg); }
@@ -148,6 +152,11 @@ footer { max-width: 1100px; margin: 4rem auto 0; padding: 2rem 1.25rem; border-t
 dialog.game { width: min(960px, 95vw); height: min(760px, 90vh); padding: 0; border: 1px solid var(--border); border-radius: 1rem; background: var(--bg2); color: var(--fg); overflow: hidden; }
 dialog.game[open] { display: flex; flex-direction: column; }
 dialog.game::backdrop { background: rgb(0 0 0 / 0.7); backdrop-filter: blur(4px); }
+/* Native open/close animation: @starting-style + allow-discrete, no JS. */
+dialog.game, dialog.game::backdrop { transition: opacity .2s, scale .2s, display .2s allow-discrete, overlay .2s allow-discrete; opacity: 0; scale: .96; }
+dialog.game[open], dialog.game[open]::backdrop { opacity: 1; scale: 1; }
+dialog.game::backdrop { scale: 1 !important; }
+@starting-style { dialog.game[open], dialog.game[open]::backdrop { opacity: 0; scale: .96; } }
 .game-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); }
 dialog.game iframe { flex: 1; width: 100%; border: 0; background: #fff; }
 .card small a { display: inline; color: var(--accent); }
@@ -204,3 +213,5 @@ button.sort:hover, button.sort:focus-visible { color: var(--fg); }
 .weather-icon { color: var(--accent); display: inline-flex; }
 .week li > span { display: flex; justify-content: center; color: var(--fg); }
 .group-title { margin: 1.75rem 0 .75rem; font-size: 1.05rem; color: var(--muted); }
+/* Skip rendering work for below-the-fold bio sections until they scroll near. */
+main > section ~ section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
