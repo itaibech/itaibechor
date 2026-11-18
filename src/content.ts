@@ -240,6 +240,20 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: 'Child Monitor · ניטור ילדים',
+    body: t('Parental monitoring for the kids’ Windows laptops: a .NET agent records app and site usage, and a parent dashboard shows daily and weekly activity.', 'ניטור הורים למחשבי Windows של הילדים: סוכן ‎.NET מתעד שימוש באפליקציות ובאתרים, ולוח בקרה להורים מציג פעילות יומית ושבועית.'),
+    tags: ['.NET 8', 'Windows Service', 'React', 'TypeScript', 'Supabase', 'Postgres RLS', 'GitHub Pages'],
+    repo: 'https://github.com/itaibech/childMonitor',
+    year: '2026',
+    highlights: [
+      t('A Windows service plus a per-user helper track the active app and, from Chrome and Edge history, the site in view; no browser extension needed.', 'שירות Windows ורכיב עזר לכל משתמש עוקבים אחרי האפליקציה הפעילה, ומתוך היסטוריית Chrome ו-Edge גם אחרי האתר המוצג, בלי תוסף לדפדפן.'),
+      t('Dashboard with Day and Week views, charts, categories, trends and alerts per child.', 'לוח בקרה עם תצוגת יום ושבוע, גרפים, קטגוריות, מגמות והתראות לכל ילד.'),
+      t('Light on the laptop: queued uploads every 5 minutes and a built-in diagnostics checklist.', 'קל על המחשב: העלאה מרוכזת כל 5 דקות ורשימת בדיקות אבחון מובנית.'),
+      t('Per-laptop install tokens; data is visible only to the parent through RLS on the shared Supabase backend.', 'טוקן התקנה לכל מחשב; הנתונים גלויים רק להורה, דרך RLS על ה-Backend המשותף ב-Supabase.'),
+    ],
+    live: 'https://itaibech.github.io/childMonitor/',
+  },
+  {
     name: 'Rental Management · ניהול דירות',
     body: t('Hebrew RTL app for the family rental apartments: tenants, rent, expenses, partner balances, recurring tasks and documents, with Google sign-in.', 'אפליקציה לניהול דירות ההשכרה של המשפחה: דיירים, שכר דירה, הוצאות, מאזן בין שותפים, משימות חוזרות ומסמכים, עם התחברות Google.'),
     tags: ['Next.js', 'React', 'Mantine', 'Supabase', 'Postgres RLS', 'GitHub Pages'],
